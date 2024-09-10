@@ -4,16 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @XmlRootElement(name = "profileRate")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class ProfileRate extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
@@ -25,11 +21,4 @@ public class ProfileRate extends BaseDTO {
     @XmlElement
     private String _rateId;
 
-    @Override
-    public String toString() {
-        return "ProfileRate[" +
-                "_profileId='" + _profileId + '\'' +
-                ", _rateId='" + _rateId + '\'' +
-                ']';
-    }
 }

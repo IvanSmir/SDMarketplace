@@ -4,16 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @XmlRootElement(name = "project")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class ProjectDTO extends BaseDTO {
     private static final long serialVersionUID = 1L;
 
@@ -45,15 +41,4 @@ public class ProjectDTO extends BaseDTO {
     @XmlElement
     private String _status;
 
-    @Override
-    public String toString() {
-        return "ProjectDTO[" +
-                "_title='" + _title + '\'' +
-                ", _description='" + _description + '\'' +
-                ", _url='" + _url + '\'' +
-                ", _startDate='" + _startDate + '\'' +
-                ", _endDate='" + _endDate + '\'' +
-                ", _status='" + _status + '\'' +
-                ']';
-    }
 }

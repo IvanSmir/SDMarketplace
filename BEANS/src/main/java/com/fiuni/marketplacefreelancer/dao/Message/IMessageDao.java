@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IMessageDao extends JpaRepository<MessageImpl, Integer> {
+
+
 }

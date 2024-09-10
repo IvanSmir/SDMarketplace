@@ -4,22 +4,17 @@ package com.fiuni.marketplacefreelancer.dto.Price;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalTime;
 
 
 @XmlRootElement(name = "price")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class PriceDTO extends BaseDTO {
 
     private static final long serialVersionUID = 1L;
@@ -39,15 +34,5 @@ public class PriceDTO extends BaseDTO {
     @JsonProperty("date")
     @XmlElement
     private LocalTime _date;
-
-    @Override
-    public String toString() {
-        return "PriceDTO[" +
-                "_price=" + _price +
-                ", _projectId='" + _projectId + '\'' +
-                ", _currency='" + _currency + '\'' +
-                ", _date=" + _date +
-                ']';
-    }
 
 }
