@@ -7,11 +7,14 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
 @XmlRootElement(name = "profile")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ProfileDTO extends BaseDTO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("userId")

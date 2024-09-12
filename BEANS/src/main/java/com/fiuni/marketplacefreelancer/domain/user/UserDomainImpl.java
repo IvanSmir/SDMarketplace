@@ -4,6 +4,9 @@ import com.fiuni.marketplacefreelancer.domain.base.IBaseDomain;
 import com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
@@ -11,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class UserDomainImpl implements IBaseDomain {
 
     @Serial
@@ -37,6 +41,11 @@ public class UserDomainImpl implements IBaseDomain {
     @Column(name = "phone", length = 15)
     private String phone;
 
+    @CreatedDate
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updatedAt", nullable = false)
+    private LocalDateTime updatedAt;
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.LocalTime;
 
 
@@ -17,6 +18,7 @@ import java.time.LocalTime;
 @EqualsAndHashCode(callSuper = false)
 public class PriceDTO extends BaseDTO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("price")

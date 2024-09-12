@@ -6,11 +6,13 @@ import com.fiuni.marketplacefreelancer.dto.base.BaseResult;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.io.Serial;
 import java.util.List;
 
 @XmlRootElement(name = "priceResult")
 public class PriceResult extends BaseResult<PriceDTO> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @XmlElement

@@ -7,6 +7,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.LocalTime;
 
 @XmlRootElement(name = "message")
@@ -14,6 +15,7 @@ import java.time.LocalTime;
 @EqualsAndHashCode(callSuper = false)
 public class MessageDTO extends BaseDTO {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("message")

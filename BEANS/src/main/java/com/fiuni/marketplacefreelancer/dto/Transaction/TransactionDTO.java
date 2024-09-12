@@ -7,12 +7,14 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.time.LocalTime;
 
 @XmlRootElement(name = "transaction")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class TransactionDTO extends BaseDTO {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("projectId")

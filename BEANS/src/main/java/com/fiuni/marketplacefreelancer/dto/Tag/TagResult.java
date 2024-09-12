@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.io.Serial;
 import java.util.List;
 
 @XmlRootElement(name = "tagResult")
 
 public class TagResult extends BaseResult<TagDTO> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @XmlElement
