@@ -47,7 +47,7 @@ public class RoleService extends BaseServiceImpl<RoleDTO, RoleDomainImpl, RoleRe
 
         logger.info("Starting role save service for role name: {}", dto.getName());
 
-        Optional<RoleDomainImpl> existingRole = Optional.ofNullable(roleDao.findByName(dto.getName()));
+        Optional<RoleDomainImpl> existingRole = roleDao.findByName(dto.getName());
         if (existingRole.isPresent()) {
             logger.warn("Attempt to create a role that already exists: {}", dto.getName());
             throw new AlreadyExistsException("The role with name " + dto.getName() + " already exists");
@@ -112,7 +112,7 @@ public class RoleService extends BaseServiceImpl<RoleDTO, RoleDomainImpl, RoleRe
         RoleDomainImpl existingRole = existingRoleOpt.get();
 
         if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
-            Optional<RoleDomainImpl> roleByName = Optional.ofNullable(roleDao.findByName(dto.getName()));
+            Optional<RoleDomainImpl> roleByName = roleDao.findByName(dto.getName());
             if (roleByName.isPresent() && !roleByName.get().getId().equals(id)) {
                 logger.warn("Attempt to update role with name {} which already exists", dto.getName());
                 throw new AlreadyExistsException("Role with name " + dto.getName() + " already exists");
@@ -129,6 +129,14 @@ public class RoleService extends BaseServiceImpl<RoleDTO, RoleDomainImpl, RoleRe
             logger.error("An unexpected error occurred while updating role with id: {}", id, e);
             throw new RuntimeException("Error updating the role", e);
         }
+    }
+
+
+    public RoleDTO getByName(String name) {
+        logger.info("Starting role get by name service for role name: {}", name);
+        return roleDao.findByName(name)
+                .map(this::converDomainToDto)
+                .orElseThrow(() -> new NotFoundException("Role", name));
     }
 
     private void validateRoleData(RoleDTO dto) {

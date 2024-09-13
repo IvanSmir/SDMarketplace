@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="MFBeans">
+    <output-path>$PROJECT_DIR$/out/artifacts/MFBeans</output-path>
+    <root id="archive" name="MFBeans.jar">
+      <element id="module-output" name="MarketplaceFreelancer" />
+    </root>
+  </artifact>
+</component>

@@ -5,8 +5,9 @@ import com.fiuni.marketplacefreelancer.dto.Role.RoleDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IRoleDao extends JpaRepository<RoleDomainImpl, String> {
-    public RoleDomainImpl findByName(String name);
-
+    Optional<RoleDomainImpl> findByName(String name);
 }

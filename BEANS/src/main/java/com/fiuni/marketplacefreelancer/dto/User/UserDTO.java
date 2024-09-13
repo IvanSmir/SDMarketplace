@@ -4,14 +4,19 @@ import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.xml.bind.annotation.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
+import java.time.LocalDateTime;
 
 @XmlRootElement(name = "user")
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UserDTO extends BaseDTO {
     @Serial
@@ -40,5 +45,20 @@ public class UserDTO extends BaseDTO {
     @XmlElement
     @NotBlank(message = "The role is required")
     private String role_id;
+
+
+    @JsonProperty("createdAt")
+    @XmlElement
+    private LocalDateTime createdAt;
+
+    @Override
+    public String toString() {
+        return "UserDTO[" +
+                "_name='" + name + '\'' +
+                ", _email='" + email + '\'' +
+                ", _phone='" + phone + '\'' +
+                ", _createdAt='" + createdAt + '\'' +
+                ']';
+    }
 
 }

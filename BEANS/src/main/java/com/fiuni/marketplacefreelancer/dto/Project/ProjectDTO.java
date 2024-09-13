@@ -4,44 +4,59 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 
 @XmlRootElement(name = "project")
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectDTO extends BaseDTO {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("userId")
     @XmlElement
-    private String _userId;
+    private String userId;
 
     @JsonProperty("title")
     @XmlElement
-    private String _title;
+    private String title;
 
     @JsonProperty("description")
     @XmlElement
-    private String _description;
+    private String description;
 
     @JsonProperty("url")
     @XmlElement
-    private String _url;
+    private String url;
 
     @JsonProperty("startDate")
     @XmlElement
-    private String _startDate;
+    private String startDate;
 
     @JsonProperty("endDate")
     @XmlElement
-    private String _endDate;
+    private String endDate;
 
     @JsonProperty("status")
     @XmlElement
-    private String _status;
+    private String status;
 
+    @Override
+    public String toString() {
+        return "ProjectDTO[" +
+                "_title='" + title + '\'' +
+                ", _description='" + description + '\'' +
+                ", _url='" + url + '\'' +
+                ", _startDate='" + startDate + '\'' +
+                ", _endDate='" + endDate + '\'' +
+                ", _status='" + status + '\'' +
+                ']';
+    }
 }

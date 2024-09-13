@@ -4,14 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 
 @XmlRootElement(name = "projectTag")
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectTagDTO extends BaseDTO {
 
     @Serial
@@ -25,4 +29,11 @@ public class ProjectTagDTO extends BaseDTO {
     @XmlElement
     private String _tagId;
 
+    @Override
+    public String toString() {
+        return "ProjectTagDTO[" +
+                "_projectId='" + _projectId + '\'' +
+                ", _tagId='" + _tagId + '\'' +
+                ']';
+    }
 }

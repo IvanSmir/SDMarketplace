@@ -4,15 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.io.Serial;
 import java.time.LocalTime;
 
 @XmlRootElement(name = "message")
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageDTO extends BaseDTO {
 
     @Serial
@@ -20,22 +24,33 @@ public class MessageDTO extends BaseDTO {
 
     @JsonProperty("message")
     @XmlElement
-    private String _message;
+    private String message;
 
     @JsonProperty("senderId")
     @XmlElement
-    private String _senderId;
+    private String senderId;
 
     @JsonProperty("receptorId")
     @XmlElement
-    private String _receptorId;
+    private String receptorId;
 
     @JsonProperty("projectId")
     @XmlElement
-    private String _projectId;
+    private String projectId;
 
     @JsonProperty("date")
     @XmlElement
-    private LocalTime _date;
+    private LocalTime date;
 
+
+    @Override
+    public String toString() {
+        return "MessageDTO[" +
+                "_message='" + message + '\'' +
+                ", _senderId='" + senderId + '\'' +
+                ", _receptorId='" + receptorId + '\'' +
+                ", _projectId='" + projectId + '\'' +
+                ", _date=" + date +
+                ']';
+    }
 }

@@ -4,12 +4,21 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.xml.bind.annotation.XmlTransient;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public abstract class BaseResult<DTO extends BaseDTO> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-
+    @JsonIgnore
+    @XmlTransient
     private List<DTO> _dtos;
 
     protected List<DTO> getList() {

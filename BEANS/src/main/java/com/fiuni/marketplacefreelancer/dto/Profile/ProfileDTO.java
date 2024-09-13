@@ -4,14 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serial;
 
 @XmlRootElement(name = "profile")
-@Data
-@EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProfileDTO extends BaseDTO {
 
     @Serial
@@ -19,37 +23,37 @@ public class ProfileDTO extends BaseDTO {
 
     @JsonProperty("userId")
     @XmlElement
-    private String _userId;
+    private String userId;
 
     @JsonProperty("name")
     @XmlElement
-    private String _name;
+    private String name;
 
     @JsonProperty("experience")
     @XmlElement
-    private String _experience;
+    private String experience;
 
     @JsonProperty("portfolioUrl")
     @XmlElement
-    private String _portfolioUrl;
+    private String portfolioUrl;
 
     @JsonProperty("rate")
     @XmlElement
-    private float _rate;
+    private float rate;
 
     @JsonProperty("description")
     @XmlElement
-    private String _description;
+    private String description;
 
     @Override
     public String toString() {
         return "ProfileDTO[" +
-                "_userId='" + _userId + '\'' +
-                ", _name='" + _name + '\'' +
-                ", _experience='" + _experience + '\'' +
-                ", _portfolioUrl='" + _portfolioUrl + '\'' +
-                ", _rate=" + _rate +
-                ", _description='" + _description + '\'' +
+                "_userId='" + userId + '\'' +
+                ", _name='" + name + '\'' +
+                ", _experience='" + experience + '\'' +
+                ", _portfolioUrl='" + portfolioUrl + '\'' +
+                ", _rate=" + rate +
+                ", _description='" + description + '\'' +
                 ']';
     }
 }

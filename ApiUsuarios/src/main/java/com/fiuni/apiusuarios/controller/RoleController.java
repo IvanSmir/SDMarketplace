@@ -89,4 +89,15 @@ public class RoleController{
         }
     }
 
+
+    @GetMapping("/{name}")
+    public ResponseEntity<RoleDTO> getByName(@PathVariable String name) {
+        try {
+            RoleDTO role = roleService.getByName(name);
+            return new ResponseEntity<>(role, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

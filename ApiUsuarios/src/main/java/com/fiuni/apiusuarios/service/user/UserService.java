@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -80,6 +81,7 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
     }
 
     @Override
+    @Cacheable(value = "user", key = "'api_user_' + #id")
     public UserDTO getById(String id) {
         logger.info("Starting user get by id service for user ID: {}", id);
         return userDao.findById(id)
@@ -133,7 +135,6 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
             throw new AlreadyExistsException("User with email " + dto.getEmail() + " already exists");
         }
         try {
-            //only update the fields that are not null
             UserDomainImpl updatedUser = userDao.save(existingUserOpt.get());
             logger.info("User with id {} updated successfully", updatedUser.getId());
             return modelMapper.map(updatedUser, UserDTO.class);
