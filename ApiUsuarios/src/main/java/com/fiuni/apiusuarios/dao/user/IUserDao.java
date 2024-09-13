@@ -1,4 +1,4 @@
-package com.fiuni.apiusuarios.dao;
+package com.fiuni.apiusuarios.dao.user;
 
 import com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;
 import org.springframework.data.jpa.repository.JpaRepository;

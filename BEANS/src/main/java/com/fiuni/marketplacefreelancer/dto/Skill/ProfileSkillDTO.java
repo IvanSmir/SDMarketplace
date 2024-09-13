@@ -22,17 +22,17 @@ public class ProfileSkillDTO extends BaseDTO {
 
     @JsonProperty("profileId")
     @XmlElement
-    private String _profileId;
+    private String profileId;
 
     @JsonProperty("skillId")
     @XmlElement
-    private String _skillId;
+    private String skillId;
 
     @Override
     public String toString() {
         return "ProfileSkillDTO[" +
-                "_profileId='" + _profileId + '\'' +
-                ", _skillId='" + _skillId + '\'' +
+                "_profileId='" + profileId + '\'' +
+                ", _skillId='" + skillId + '\'' +
                 ']';
     }
 
