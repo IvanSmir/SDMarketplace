@@ -22,17 +22,21 @@ public class RateDTO extends BaseDTO {
 
     @JsonProperty("amount")
     @XmlElement
-    private float _amount;
+    private double amount;
 
     @JsonProperty("rateType")
     @XmlElement
-    private String _rateType;
+    private String rateType;
+
+    @JsonProperty("profileId")
+    @XmlElement
+    private String profileId;
 
     @Override
     public String toString() {
         return "RateDTO[" +
-                "_amount=" + _amount +
-                ", _rateType='" + _rateType + '\'' +
+                "_amount=" + amount +
+                ", _rateType='" + rateType + '\'' +
                 ']';
     }
 }

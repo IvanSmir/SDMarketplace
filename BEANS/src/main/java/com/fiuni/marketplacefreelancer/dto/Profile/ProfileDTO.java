@@ -1,6 +1,8 @@
 package com.fiuni.marketplacefreelancer.dto.Profile;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;
+import com.fiuni.marketplacefreelancer.dto.Skill.SkillDTO;
 import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -10,6 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
+import java.util.List;
+import java.util.Set;
 
 @XmlRootElement(name = "profile")
 @Getter
@@ -44,6 +48,15 @@ public class ProfileDTO extends BaseDTO {
     @JsonProperty("description")
     @XmlElement
     private String description;
+
+    @JsonProperty("skills")
+    @XmlElement
+    private Set<String> skills;
+
+    @JsonProperty("rates")
+    @XmlElement
+    private List<RateDTO> rates;
+
 
     @Override
     public String toString() {

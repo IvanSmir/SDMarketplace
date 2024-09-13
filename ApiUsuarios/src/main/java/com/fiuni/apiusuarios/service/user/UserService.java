@@ -30,14 +30,16 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
 
 
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final IUserDao userDao;
+    private final IRoleDao roleDao;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private IUserDao userDao;
-
-    @Autowired
-    private IRoleDao roleDao;
+    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper) {
+        this.userDao = userDao;
+        this.roleDao = roleDao;
+        this.modelMapper = modelMapper;
+    }
 
 
     @Override
