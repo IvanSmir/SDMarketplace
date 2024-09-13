@@ -63,4 +63,10 @@ public class UserController {
         }
     }
 
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<UserResult> getByRoleId(@PathVariable String roleId, Pageable pageable) {
+          UserResult userResult = userService.getByRoleId(roleId, pageable);
+        return new ResponseEntity<>(userResult, HttpStatus.OK);
+    }
+
 }

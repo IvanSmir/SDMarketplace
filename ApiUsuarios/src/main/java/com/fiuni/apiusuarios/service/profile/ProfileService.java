@@ -13,6 +13,7 @@ import com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;
 import com.fiuni.marketplacefreelancer.dto.Profile.ProfileDTO;
 import com.fiuni.marketplacefreelancer.dto.Profile.ProfileResult;
 import com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,13 +147,17 @@ public class ProfileService extends BaseServiceImpl<ProfileDTO, ProfileDomainImp
         result.setProfiles(profilesDTO);
         return result;
     }
-
+    @Transactional
     public ProfileDTO addRate(String id, RateDTO dto) {
         log.info("Starting profile add rate service for profile id: {}", id);
         Optional<ProfileDomainImpl> existingProfileOpt = profileDao.findById(id);
         if (existingProfileOpt.isPresent()) {
             ProfileDomainImpl existingProfile = existingProfileOpt.get();
-            existingProfile.addRate(modelMapper.map(dto, RateDomainImpl.class));
+
+            RateDomainImpl rate = modelMapper.map(dto, RateDomainImpl.class);
+            rate.setProfile(existingProfile);
+            existingProfile.addRate(rate);
+            log.info("Rate before save: {}", rate);
             ProfileDomainImpl savedProfile = profileDao.save(existingProfile);
             log.info("Profile with id {} updated successfully", savedProfile.getId());
             return converDomainToDto(savedProfile);

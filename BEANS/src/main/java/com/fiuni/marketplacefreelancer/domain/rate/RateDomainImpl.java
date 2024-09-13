@@ -5,6 +5,7 @@ import com.fiuni.marketplacefreelancer.domain.enums.RateType;
 import com.fiuni.marketplacefreelancer.domain.profile.ProfileDomainImpl;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serial;
 
@@ -31,6 +32,7 @@ public class RateDomainImpl implements IBaseDomain {
 
     @ManyToOne
     @JoinColumn(name = "profile_id")
+    @ToString.Exclude
     private ProfileDomainImpl profile;
 
 

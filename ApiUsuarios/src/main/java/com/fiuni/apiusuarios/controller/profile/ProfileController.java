@@ -63,8 +63,8 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.removeRate(id, rateId), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/skill/{skillId}")
-    public ResponseEntity<?> addSkillToProfile(@PathVariable String id, @PathVariable String skillId) {
+    @PutMapping("/{id}/skill")
+    public ResponseEntity<?> addSkillToProfile(@PathVariable String id, @RequestBody String skillId) {
         return new ResponseEntity<>(profileService.addSkillToProfile(id, skillId), HttpStatus.OK);
     }
 

@@ -41,21 +41,11 @@ public class ProfileDTO extends BaseDTO {
     @XmlElement
     private String portfolioUrl;
 
-    @JsonProperty("rate")
-    @XmlElement
-    private float rate;
 
     @JsonProperty("description")
     @XmlElement
     private String description;
 
-    @JsonProperty("skills")
-    @XmlElement
-    private Set<String> skills;
-
-    @JsonProperty("rates")
-    @XmlElement
-    private List<RateDTO> rates;
 
 
     @Override
@@ -65,7 +55,6 @@ public class ProfileDTO extends BaseDTO {
                 ", _name='" + name + '\'' +
                 ", _experience='" + experience + '\'' +
                 ", _portfolioUrl='" + portfolioUrl + '\'' +
-                ", _rate=" + rate +
                 ", _description='" + description + '\'' +
                 ']';
     }

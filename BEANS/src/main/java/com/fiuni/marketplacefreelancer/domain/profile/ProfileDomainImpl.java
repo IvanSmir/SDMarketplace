@@ -36,8 +36,8 @@ public class ProfileDomainImpl implements IBaseDomain {
     @Column(name = "portfolio_url")
     private String portfolioUrl;
 
-    @OneToMany(mappedBy = "profile")
-    List<RateDomainImpl> rates = new ArrayList<>();
+    @OneToMany(mappedBy = "profile",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<RateDomainImpl> rates = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "profile_skill",
