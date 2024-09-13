@@ -42,6 +42,10 @@ public class PriceDTO extends BaseDTO {
     @XmlElement
     private LocalTime date;
 
+    @JsonProperty("active")
+    @XmlElement
+    private boolean active;
+
     @Override
     public String toString() {
         return "PriceDTO[" +
@@ -49,6 +53,7 @@ public class PriceDTO extends BaseDTO {
                 ", _projectId='" + projectId + '\'' +
                 ", _currency='" + currency + '\'' +
                 ", _date=" + date +
+                ", _active=" + active +
                 ']';
     }
 

@@ -36,4 +36,8 @@ public class PriceDomainImpl implements IBaseDomain {
     @Column(name = "date", nullable = false)
     private LocalTime date;
 
+    @Column(name = "active", nullable = false )
+    private Boolean active = true;
+
+
 }

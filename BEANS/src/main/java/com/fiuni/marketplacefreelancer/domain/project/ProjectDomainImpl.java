@@ -41,10 +41,10 @@ public class ProjectDomainImpl implements IBaseDomain {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "startDate", nullable = false)
+    @Column(name = "startDate")
     private LocalDate startDate;
 
-    @Column(name = "endDate", nullable = false)
+    @Column(name = "endDate")
     private LocalDate endDate;
 
 }
