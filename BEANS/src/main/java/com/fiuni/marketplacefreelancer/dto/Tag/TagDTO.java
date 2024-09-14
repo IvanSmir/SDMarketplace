@@ -23,17 +23,17 @@ public class TagDTO extends BaseDTO {
 
     @JsonProperty("name")
     @XmlElement
-    private String _name;
+    private String name;
 
     @JsonProperty("description")
     @XmlElement
-    private String _description;
+    private String description;
 
     @Override
     public String toString() {
         return "TagDTO[" +
-                "_name='" + _name + '\'' +
-                ", _description='" + _description + '\'' +
+                "_name='" + name + '\'' +
+                ", _description='" + description + '\'' +
                 ']';
     }
 }
