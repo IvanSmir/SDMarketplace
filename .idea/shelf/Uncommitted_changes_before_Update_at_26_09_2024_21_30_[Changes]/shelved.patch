@@ -1,0 +1,1947 @@
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/NotFoundException.java
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/NotFoundException.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/NotFoundException.java
+rename from ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/NotFoundException.java
+rename to BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/NotFoundException.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/NotFoundException.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/NotFoundException.java	(date 1726278097163)
+@@ -1,4 +1,4 @@
+-package com.fiuni.apiusuarios.utils;
++package com.fiuni.marketplacefreelancer.utils;
+ 
+ public class NotFoundException extends RuntimeException {
+     public NotFoundException(String message, String id) {
+Index: BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/Profile/ProfileDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.marketplacefreelancer.dto.Profile;\r\n\r\nimport com.fasterxml.jackson.annotation.JsonProperty;\r\nimport com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.Skill.SkillDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.base.BaseDTO;\r\nimport jakarta.xml.bind.annotation.XmlElement;\r\nimport jakarta.xml.bind.annotation.XmlRootElement;\r\nimport lombok.AllArgsConstructor;\r\nimport lombok.Getter;\r\nimport lombok.NoArgsConstructor;\r\nimport lombok.Setter;\r\n\r\nimport java.io.Serial;\r\nimport java.util.List;\r\nimport java.util.Set;\r\n\r\n@XmlRootElement(name = \"profile\")\r\n@Getter\r\n@Setter\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\npublic class ProfileDTO extends BaseDTO {\r\n\r\n    @Serial\r\n    private static final long serialVersionUID = 1L;\r\n\r\n    @JsonProperty(\"userId\")\r\n    @XmlElement\r\n    private String userId;\r\n\r\n    @JsonProperty(\"name\")\r\n    @XmlElement\r\n    private String name;\r\n\r\n    @JsonProperty(\"experience\")\r\n    @XmlElement\r\n    private String experience;\r\n\r\n    @JsonProperty(\"portfolioUrl\")\r\n    @XmlElement\r\n    private String portfolioUrl;\r\n\r\n\r\n    @JsonProperty(\"description\")\r\n    @XmlElement\r\n    private String description;\r\n\r\n\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"ProfileDTO[\" +\r\n                \"_userId='\" + userId + '\\'' +\r\n                \", _name='\" + name + '\\'' +\r\n                \", _experience='\" + experience + '\\'' +\r\n                \", _portfolioUrl='\" + portfolioUrl + '\\'' +\r\n                \", _description='\" + description + '\\'' +\r\n                ']';\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/Profile/ProfileDTO.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/Profile/ProfileDTO.java
+--- a/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/Profile/ProfileDTO.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/Profile/ProfileDTO.java	(date 1726283190160)
+@@ -47,7 +47,6 @@
+     private String description;
+ 
+ 
+-
+     @Override
+     public String toString() {
+         return "ProfileDTO[" +
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/GlobalExceptionHandler.java
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/GlobalExceptionHandler.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/GlobalExceptionHandler.java
+rename from ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/GlobalExceptionHandler.java
+rename to BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/GlobalExceptionHandler.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/GlobalExceptionHandler.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/GlobalExceptionHandler.java	(date 1726279055597)
+@@ -1,9 +1,8 @@
+-package com.fiuni.apiusuarios.utils;
++package com.fiuni.marketplacefreelancer.utils;
+ 
+ import com.fasterxml.jackson.core.JsonParseException;
+ import lombok.extern.slf4j.Slf4j;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
++import org.springframework.data.mapping.PropertyReferenceException;
+ import org.springframework.http.HttpStatus;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.http.converter.HttpMessageNotReadableException;
+@@ -109,4 +108,11 @@
+         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+     }
+ 
++
++    @ExceptionHandler(PropertyReferenceException.class)
++    public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
++        return ResponseEntity
++                .status(HttpStatus.BAD_REQUEST)
++                .body("Campo de ordenación no válido: " + ex.getPropertyName());
++    }
+ }
+Index: ApiUsuarios/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n    <modelVersion>4.0.0</modelVersion>\r\n    <parent>\r\n        <groupId>org.springframework.boot</groupId>\r\n        <artifactId>spring-boot-starter-parent</artifactId>\r\n        <version>3.3.3</version>\r\n        <relativePath/>\r\n    </parent>\r\n    <groupId>com.fiuni</groupId>\r\n    <artifactId>ApiUsuarios</artifactId>\r\n    <version>0.0.1-SNAPSHOT</version>\r\n    <name>ApiUsuarios</name>\r\n    <description>ApiUsuarios</description>\r\n    <url/>\r\n    <licenses>\r\n        <license/>\r\n    </licenses>\r\n    <developers>\r\n        <developer/>\r\n    </developers>\r\n    <scm>\r\n        <connection/>\r\n        <developerConnection/>\r\n        <tag/>\r\n        <url/>\r\n    </scm>\r\n    <properties>\r\n        <java.version>17</java.version>\r\n    </properties>\r\n    <dependencies>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-data-rest</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-security</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-web</artifactId>\r\n        </dependency>\r\n\r\n        <dependency>\r\n            <groupId>org.postgresql</groupId>\r\n            <artifactId>postgresql</artifactId>\r\n            <scope>runtime</scope>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.projectlombok</groupId>\r\n            <artifactId>lombok</artifactId>\r\n            <optional>true</optional>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-test</artifactId>\r\n            <scope>test</scope>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.security</groupId>\r\n            <artifactId>spring-security-test</artifactId>\r\n            <scope>test</scope>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.modelmapper</groupId>\r\n            <artifactId>modelmapper</artifactId>\r\n            <version>3.2.0</version>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-data-jpa</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-logging</artifactId>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>com.fiuni</groupId>\r\n            <artifactId>MarketplaceFreelancer</artifactId>\r\n            <version>0.0.1</version>\r\n            <scope>system</scope>\r\n            <systemPath>${basedir}/lib/MarketplaceFreelancer-0.0.1.jar</systemPath>\r\n        </dependency>\r\n        <dependency>\r\n            <groupId>org.springframework.boot</groupId>\r\n            <artifactId>spring-boot-starter-data-redis</artifactId>\r\n        </dependency>\r\n\r\n        <dependency>\r\n            <groupId>org.apache.commons</groupId>\r\n            <artifactId>commons-pool2</artifactId>\r\n        </dependency>\r\n\r\n\r\n    </dependencies>\r\n\r\n    <build>\r\n        <plugins>\r\n            <plugin>\r\n                <groupId>org.springframework.boot</groupId>\r\n                <artifactId>spring-boot-maven-plugin</artifactId>\r\n                <configuration>\r\n                    <excludes>\r\n                        <exclude>\r\n                            <groupId>org.projectlombok</groupId>\r\n                            <artifactId>lombok</artifactId>\r\n                        </exclude>\r\n                    </excludes>\r\n                </configuration>\r\n            </plugin>\r\n        </plugins>\r\n    </build>\r\n\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/pom.xml b/ApiUsuarios/pom.xml
+--- a/ApiUsuarios/pom.xml	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/pom.xml	(date 1727372315508)
+@@ -32,10 +32,6 @@
+     <dependencies>
+         <dependency>
+             <groupId>org.springframework.boot</groupId>
+-            <artifactId>spring-boot-starter-data-rest</artifactId>
+-        </dependency>
+-        <dependency>
+-            <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-security</artifactId>
+         </dependency>
+         <dependency>
+@@ -53,16 +49,7 @@
+             <artifactId>lombok</artifactId>
+             <optional>true</optional>
+         </dependency>
+-        <dependency>
+-            <groupId>org.springframework.boot</groupId>
+-            <artifactId>spring-boot-starter-test</artifactId>
+-            <scope>test</scope>
+-        </dependency>
+-        <dependency>
+-            <groupId>org.springframework.security</groupId>
+-            <artifactId>spring-security-test</artifactId>
+-            <scope>test</scope>
+-        </dependency>
++
+         <dependency>
+             <groupId>org.modelmapper</groupId>
+             <artifactId>modelmapper</artifactId>
+@@ -92,8 +79,15 @@
+             <groupId>org.apache.commons</groupId>
+             <artifactId>commons-pool2</artifactId>
+         </dependency>
+-
+-
++        <dependency>
++            <groupId>org.springdoc</groupId>
++            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
++            <version>2.6.0</version>
++        </dependency>
++        <dependency>
++            <groupId>com.fasterxml.jackson.datatype</groupId>
++            <artifactId>jackson-datatype-jsr310</artifactId>
++        </dependency>
+     </dependencies>
+ 
+     <build>
+Index: ApiUsuarios/src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>spring.application.name=ApiUsuarios\r\nspring.datasource.url=jdbc:postgresql://localhost:5432/sdmarketplace\r\nspring.datasource.username=postgres\r\nspring.datasource.password=123456\r\nspring.datasource.driver-class-name=org.postgresql.Driver\r\n\r\nspring.jpa.hibernate.ddl-auto=update\r\n\r\nspring.jackson.default-property-inclusion=non_null\r\n\r\nspring.web.resources.add-mappings=false\r\n\r\nspring.data.rest.default-page-size=10\r\n\r\nspring.data.redis.host=127.0.0.1\r\nspring.data.redis.port=6379\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/ApiUsuarios/src/main/resources/application.properties b/ApiUsuarios/src/main/resources/application.properties
+--- a/ApiUsuarios/src/main/resources/application.properties	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/resources/application.properties	(date 1726868832650)
+@@ -1,7 +1,7 @@
+ spring.application.name=ApiUsuarios
+-spring.datasource.url=jdbc:postgresql://localhost:5432/sdmarketplace
+-spring.datasource.username=postgres
+-spring.datasource.password=123456
++spring.datasource.url= jdbc:postgresql://s1ehm7:xau_TdWu2STtjLJEWxhrnQHu6KqDo6PtRe333@us-east-1.sql.xata.sh/sdmarketplace:main?sslmode=require
++spring.datasource.username= s1ehm7
++spring.datasource.password= xau_TdWu2STtjLJEWxhrnQHu6KqDo6PtRe333
+ spring.datasource.driver-class-name=org.postgresql.Driver
+ 
+ spring.jpa.hibernate.ddl-auto=update
+@@ -11,6 +11,12 @@
+ spring.web.resources.add-mappings=false
+ 
+ spring.data.rest.default-page-size=10
++server.error.path=/error
++
++
++
++TTl_usersCacheInSeconds=3600
++TTl_profilesCacheInMinutes=60
+ 
+ spring.data.redis.host=127.0.0.1
+ spring.data.redis.port=6379
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/rate/IRateDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/rate/IRateDao.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/rate/IRateDao.java
+new file mode 100644
+--- /dev/null	(date 1726278462429)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/rate/IRateDao.java	(date 1726278462429)
+@@ -0,0 +1,13 @@
++package com.fiuni.apiusuarios.dao.rate;
++
++import com.fiuni.marketplacefreelancer.domain.rate.RateDomainImpl;
++import org.springframework.data.domain.Page;
++import org.springframework.data.domain.Pageable;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.stereotype.Repository;
++
++@Repository
++public interface IRateDao extends JpaRepository<RateDomainImpl, String> {
++
++    Page<RateDomainImpl> findAllByProfileId(String profileId, Pageable pageable);
++}
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/InvalidDataException.java
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/InvalidDataException.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/InvalidDataException.java
+rename from ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/InvalidDataException.java
+rename to BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/InvalidDataException.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/InvalidDataException.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/InvalidDataException.java	(date 1726278097168)
+@@ -1,4 +1,4 @@
+-package com.fiuni.apiusuarios.utils;
++package com.fiuni.marketplacefreelancer.utils;
+ 
+ public class InvalidDataException extends RuntimeException {
+     public InvalidDataException(String message) {
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/skill/ISkillDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.dao.skill;\r\n\r\nimport com.fiuni.marketplacefreelancer.domain.skill.SkillDomainImpl;\r\nimport org.springframework.data.jpa.repository.JpaRepository;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.Optional;\r\n\r\n@Repository\r\npublic interface ISkillDao extends JpaRepository<SkillDomainImpl, String> {\r\n\r\n    Optional<SkillDomainImpl> findByName(String name);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/skill/ISkillDao.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/skill/ISkillDao.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/skill/ISkillDao.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/skill/ISkillDao.java	(date 1726854991544)
+@@ -1,7 +1,10 @@
+ package com.fiuni.apiusuarios.dao.skill;
+ 
+ import com.fiuni.marketplacefreelancer.domain.skill.SkillDomainImpl;
++import org.springframework.data.domain.Page;
++import org.springframework.data.domain.Pageable;
+ import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Query;
+ import org.springframework.stereotype.Repository;
+ 
+ import java.util.Optional;
+@@ -10,4 +13,7 @@
+ public interface ISkillDao extends JpaRepository<SkillDomainImpl, String> {
+ 
+     Optional<SkillDomainImpl> findByName(String name);
++
++    @Query("SELECT s.id FROM SkillDomainImpl s")
++    Page<String> findAllIds(Pageable pageable);
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/AlreadyExistsException.java
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/AlreadyExistsException.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/AlreadyExistsException.java
+rename from ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/AlreadyExistsException.java
+rename to BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/AlreadyExistsException.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/utils/AlreadyExistsException.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/utils/AlreadyExistsException.java	(date 1726278097173)
+@@ -1,4 +1,4 @@
+-package com.fiuni.apiusuarios.utils;
++package com.fiuni.marketplacefreelancer.utils;
+ 
+ public class AlreadyExistsException extends RuntimeException {
+     public AlreadyExistsException(String message) {
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/role/IRoleDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.dao.role;\r\n\r\nimport com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;\r\nimport org.springframework.data.jpa.repository.JpaRepository;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.Optional;\r\n\r\n@Repository\r\npublic interface IRoleDao extends JpaRepository<RoleDomainImpl, String> {\r\n    Optional<RoleDomainImpl> findByName(String name);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/role/IRoleDao.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/role/IRoleDao.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/role/IRoleDao.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/role/IRoleDao.java	(date 1726856477340)
+@@ -1,7 +1,10 @@
+ package com.fiuni.apiusuarios.dao.role;
+ 
+ import com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;
++import org.springframework.data.domain.Page;
++import org.springframework.data.domain.Pageable;
+ import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Query;
+ import org.springframework.stereotype.Repository;
+ 
+ import java.util.Optional;
+@@ -9,4 +12,7 @@
+ @Repository
+ public interface IRoleDao extends JpaRepository<RoleDomainImpl, String> {
+     Optional<RoleDomainImpl> findByName(String name);
++
++    @Query("SELECT DISTINCT r.id FROM RoleDomainImpl r")
++    Page<String> findAllIds(Pageable pageable);
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/base/BaseServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.service.base;\r\n\r\nimport com.fiuni.marketplacefreelancer.domain.base.IBaseDomain;\r\nimport com.fiuni.marketplacefreelancer.dto.base.BaseDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.base.BaseResult;\r\n\r\npublic abstract class BaseServiceImpl<DTO extends BaseDTO, DOMAIN extends IBaseDomain, R extends BaseResult<DTO>> implements IBaseService<DTO, R> {\r\n    protected abstract DTO converDomainToDto(DOMAIN domain);\r\n\r\n    protected abstract DOMAIN converDtoToDomain(DTO dto);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/base/BaseServiceImpl.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/base/BaseServiceImpl.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/base/BaseServiceImpl.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/base/BaseServiceImpl.java	(date 1726278462459)
+@@ -5,7 +5,6 @@
+ import com.fiuni.marketplacefreelancer.dto.base.BaseResult;
+ 
+ public abstract class BaseServiceImpl<DTO extends BaseDTO, DOMAIN extends IBaseDomain, R extends BaseResult<DTO>> implements IBaseService<DTO, R> {
+-    protected abstract DTO converDomainToDto(DOMAIN domain);
+-
+-    protected abstract DOMAIN converDtoToDomain(DTO dto);
++    protected abstract DTO convertDomainToDto(DOMAIN domain);
++    protected abstract DOMAIN convertDtoToDomain(DTO dto);
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/profile/ProfileService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.service.profile;\r\n\r\nimport com.fiuni.apiusuarios.dao.profile.IProfileDao;\r\nimport com.fiuni.apiusuarios.dao.skill.ISkillDao;\r\nimport com.fiuni.apiusuarios.dao.user.IUserDao;\r\nimport com.fiuni.apiusuarios.service.base.BaseServiceImpl;\r\nimport com.fiuni.apiusuarios.utils.InvalidDataException;\r\nimport com.fiuni.apiusuarios.utils.NotFoundException;\r\nimport com.fiuni.marketplacefreelancer.domain.profile.ProfileDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.domain.rate.RateDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.domain.skill.SkillDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.dto.Profile.ProfileDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.Profile.ProfileResult;\r\nimport com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;\r\nimport jakarta.transaction.Transactional;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.modelmapper.ModelMapper;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.PageRequest;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\nimport java.util.Objects;\r\nimport java.util.Optional;\r\n\r\n@Service\r\n@Slf4j\r\npublic class ProfileService extends BaseServiceImpl<ProfileDTO, ProfileDomainImpl, ProfileResult> {\r\n\r\n    private final IProfileDao profileDao;\r\n    private final IUserDao userDao;\r\n    private final ISkillDao skillDao;\r\n    private final ModelMapper modelMapper;\r\n\r\n    @Autowired\r\n    public ProfileService(IProfileDao profileDao, IUserDao userDao, ISkillDao skillDao, ModelMapper modelMapper) {\r\n        this.profileDao = profileDao;\r\n        this.userDao = userDao;\r\n        this.skillDao = skillDao;\r\n        this.modelMapper = modelMapper;\r\n    }\r\n\r\n    @Override\r\n    protected ProfileDTO converDomainToDto(ProfileDomainImpl domain) {\r\n        return modelMapper.map(domain, ProfileDTO.class);\r\n    }\r\n\r\n    @Override\r\n    protected ProfileDomainImpl converDtoToDomain(ProfileDTO dto) {\r\n        return modelMapper.map(dto, ProfileDomainImpl.class);\r\n    }\r\n\r\n    @Override\r\n    public ProfileDTO save(ProfileDTO dto) {\r\n        validateProfileData(dto);\r\n        log.info(\"Starting profile save service for profile user_id: {}\", dto.getUserId());\r\n        Optional<UserDomainImpl> user = userDao.findById(dto.getUserId());\r\n        if (user.isEmpty()) {\r\n            log.warn(\"Profile user_id {} not found\", dto.getUserId());\r\n            throw new InvalidDataException(\"Profile user_id \" + dto.getUserId() + \" not found\");\r\n        }\r\n        Optional<ProfileDomainImpl> existingProfile = profileDao.findByUserId(dto.getUserId());\r\n        if (existingProfile.isPresent()) {\r\n            log.warn(\"Attempt to create a profile that already exists: {}\", dto.getUserId());\r\n            throw new InvalidDataException(\"The profile with user_id \" + dto.getUserId() + \" already exists\");\r\n        }\r\n        try {\r\n            ProfileDomainImpl profile = converDtoToDomain(dto);\r\n            ProfileDomainImpl savedProfile = profileDao.save(profile);\r\n            log.info(\"Profile saved successfully with ID: {}\", savedProfile.getId());\r\n            return converDomainToDto(savedProfile);\r\n        } catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while saving profile: {}\", dto.getUserId(), e);\r\n            throw new RuntimeException(\"Error saving the profile\", e);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public ProfileDTO getById(String id) {\r\n        log.info(\"Starting profile get by id service for profile ID: {}\", id);\r\n        return profileDao.findById(id)\r\n                .map(this::converDomainToDto)\r\n                .orElseThrow(() -> new NotFoundException(\"Profile\", id));\r\n    }\r\n\r\n    @Override\r\n    public ProfileResult getAll(Pageable pageable) {\r\n        log.info(\"Starting profile get all service\");\r\n        Page<ProfileDomainImpl> profiles = profileDao.findAll(pageable);\r\n        List<ProfileDTO> profilesDTO = profiles.getContent().stream()\r\n                .map(this::converDomainToDto)\r\n                .toList();\r\n        ProfileResult result = new ProfileResult();\r\n        result.setProfiles(profilesDTO);\r\n        return result;\r\n    }\r\n\r\n    public Boolean delete(String id) {\r\n        log.info(\"Starting profile delete service for profile ID: {}\", id);\r\n        Optional<ProfileDomainImpl> profile = profileDao.findById(id);\r\n        if (profile.isPresent()) {\r\n            profileDao.delete(profile.get());\r\n            log.info(\"Profile deleted successfully with ID: {}\", id);\r\n            return true;\r\n        } else {\r\n            log.warn(\"Attempt to delete a profile that does not exist: {}\", id);\r\n            return false;\r\n        }\r\n    }\r\n\r\n    public ProfileDTO update(String id, ProfileDTO dto) {\r\n        log.info(\"Starting update for profile with id: {}\", id);\r\n\r\n        Optional<ProfileDomainImpl> existingProfileOpt = profileDao.findById(id);\r\n        if (existingProfileOpt.isEmpty()) {\r\n            log.warn(\"Profile with id {} not found\", id);\r\n            throw new InvalidDataException(\"Profile with id \" + id + \" not found\");\r\n        }\r\n\r\n        Optional<ProfileDomainImpl> existingProfile = profileDao.findById(id);\r\n        if (existingProfile.isEmpty() || existingProfile.get().getUser().getId().equals(dto.getUserId())) {\r\n            try {\r\n                ProfileDomainImpl updatedProfile = profileDao.save(converDtoToDomain(dto));\r\n                log.info(\"Profile with id {} updated successfully\", updatedProfile.getId());\r\n                return converDomainToDto(updatedProfile);\r\n            } catch (Exception e) {\r\n                log.error(\"An unexpected error occurred while updating profile with id: {}\", id, e);\r\n                throw new RuntimeException(\"Error updating the profile\", e);\r\n            }\r\n        }\r\n        else {\r\n            log.warn(\"Attempt to update a profile that does not belong to the user\");\r\n            throw new InvalidDataException(\"Profile with id \" + id + \" does not belong to the user\");\r\n        }\r\n    }\r\n\r\n    public ProfileResult getByTag(String tag, Pageable pageable) {\r\n        log.info(\"Starting profile get by tag service for profile tag: {}\", tag);\r\n        Page<ProfileDomainImpl> profiles = profileDao.findBySkills_NameContaining(tag, pageable);\r\n        List<ProfileDTO> profilesDTO = profiles.getContent().stream()\r\n                .map(this::converDomainToDto)\r\n                .toList();\r\n        ProfileResult result = new ProfileResult();\r\n        result.setProfiles(profilesDTO);\r\n        return result;\r\n    }\r\n    @Transactional\r\n    public ProfileDTO addRate(String id, RateDTO dto) {\r\n        log.info(\"Starting profile add rate service for profile id: {}\", id);\r\n        Optional<ProfileDomainImpl> existingProfileOpt = profileDao.findById(id);\r\n        if (existingProfileOpt.isPresent()) {\r\n            ProfileDomainImpl existingProfile = existingProfileOpt.get();\r\n\r\n            RateDomainImpl rate = modelMapper.map(dto, RateDomainImpl.class);\r\n            rate.setProfile(existingProfile);\r\n            existingProfile.addRate(rate);\r\n            log.info(\"Rate before save: {}\", rate);\r\n            ProfileDomainImpl savedProfile = profileDao.save(existingProfile);\r\n            log.info(\"Profile with id {} updated successfully\", savedProfile.getId());\r\n            return converDomainToDto(savedProfile);\r\n        } else {\r\n            log.warn(\"Attempt to update a profile that does not exist: {}\", id);\r\n            throw new InvalidDataException(\"Profile with id \" + id + \" not found\");\r\n        }\r\n    }\r\n\r\n    public ProfileDTO removeRate(String id, String rateId) {\r\n        log.info(\"Starting profile remove rate service for profile id: {}\", id);\r\n        Optional<ProfileDomainImpl> existingProfileOpt = profileDao.findById(id);\r\n        if (existingProfileOpt.isPresent()) {\r\n            RateDomainImpl rate = existingProfileOpt.get().getRates().stream()\r\n                    .filter(r -> Objects.equals(r.getId(), rateId))\r\n                    .findFirst()\r\n                    .orElseThrow(() -> new InvalidDataException(\"Rate with id \" + rateId + \" not found\"));\r\n            existingProfileOpt.get().removeRate(rate);\r\n            ProfileDomainImpl savedProfile = profileDao.save(existingProfileOpt.get());\r\n            log.info(\"Profile with id {} updated successfully\", savedProfile.getId());\r\n            return converDomainToDto(savedProfile);\r\n        } else {\r\n            log.warn(\"Attempt to update a profile that does not exist: {}\", id);\r\n            throw new InvalidDataException(\"Profile with id \" + id + \" not found\");\r\n        }\r\n    }\r\n\r\n\r\n\r\n    public ProfileDTO addSkillToProfile(String profileId, String skillId) {\r\n        Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);\r\n        if (profileOpt.isPresent()) {\r\n            ProfileDomainImpl profile = profileOpt.get();\r\n\r\n            Optional<SkillDomainImpl> skillOpt = skillDao.findById(skillId);\r\n            if (skillOpt.isPresent()) {\r\n                SkillDomainImpl skill = skillOpt.get();\r\n                profile.getSkills().add(skill);\r\n\r\n                ProfileDomainImpl updatedProfile = profileDao.save(profile);\r\n\r\n                return converDomainToDto(updatedProfile);\r\n            } else {\r\n                throw new InvalidDataException(\"Skill with id \" + skillId + \" not found\");\r\n            }\r\n        } else {\r\n            throw new InvalidDataException(\"Profile with id \" + profileId + \" not found\");\r\n        }\r\n    }\r\n\r\n    public ProfileDTO removeSkillFromProfile(String profileId, String skillId) {\r\n        Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);\r\n        if (profileOpt.isPresent()) {\r\n            ProfileDomainImpl profile = profileOpt.get();\r\n            profile.getSkills().removeIf(skill -> Objects.equals(skill.getId(), skillId));\r\n\r\n            ProfileDomainImpl updatedProfile = profileDao.save(profile);\r\n            return converDomainToDto(updatedProfile);\r\n        } else {\r\n            throw new InvalidDataException(\"Profile with id \" + profileId + \" not found\");\r\n        }\r\n    }\r\n\r\n\r\n    private void validateProfileData(ProfileDTO dto) {\r\n        if (dto.getUserId() == null || dto.getUserId().trim().isEmpty()) {\r\n            log.error(\"Invalid profile data: profile user_id is null or empty\");\r\n            throw new InvalidDataException(\"Profile user_id cannot be null or empty\");\r\n        }\r\n        if (dto.getRate() < 0) {\r\n            log.error(\"Invalid profile data: profile rate is null or invalid\");\r\n            throw new InvalidDataException(\"Profile rate cannot be null or invalid\");\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/profile/ProfileService.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/profile/ProfileService.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/profile/ProfileService.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/profile/ProfileService.java	(date 1726869887322)
+@@ -1,11 +1,15 @@
+ package com.fiuni.apiusuarios.service.profile;
+ 
++import com.fasterxml.jackson.core.JsonProcessingException;
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.ObjectMapper;
+ import com.fiuni.apiusuarios.dao.profile.IProfileDao;
++import com.fiuni.apiusuarios.dao.rate.IRateDao;
+ import com.fiuni.apiusuarios.dao.skill.ISkillDao;
+ import com.fiuni.apiusuarios.dao.user.IUserDao;
+ import com.fiuni.apiusuarios.service.base.BaseServiceImpl;
+-import com.fiuni.apiusuarios.utils.InvalidDataException;
+-import com.fiuni.apiusuarios.utils.NotFoundException;
++import com.fiuni.marketplacefreelancer.utils.InvalidDataException;
++import com.fiuni.marketplacefreelancer.utils.NotFoundException;
+ import com.fiuni.marketplacefreelancer.domain.profile.ProfileDomainImpl;
+ import com.fiuni.marketplacefreelancer.domain.rate.RateDomainImpl;
+ import com.fiuni.marketplacefreelancer.domain.skill.SkillDomainImpl;
+@@ -13,18 +17,22 @@
+ import com.fiuni.marketplacefreelancer.dto.Profile.ProfileDTO;
+ import com.fiuni.marketplacefreelancer.dto.Profile.ProfileResult;
+ import com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;
+-import jakarta.transaction.Transactional;
++import com.fiuni.marketplacefreelancer.dto.Rate.RateResult;
++import com.fiuni.marketplacefreelancer.dto.Skill.SkillDTO;
++import com.fiuni.marketplacefreelancer.dto.Skill.SkillResult;
+ import lombok.extern.slf4j.Slf4j;
+ import org.modelmapper.ModelMapper;
+ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.cache.Cache;
++import org.springframework.cache.CacheManager;
++import org.springframework.cache.annotation.CacheEvict;
++import org.springframework.cache.annotation.CachePut;
++import org.springframework.cache.annotation.Cacheable;
+ import org.springframework.data.domain.Page;
+-import org.springframework.data.domain.PageRequest;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.stereotype.Service;
+ 
+-import java.util.List;
+-import java.util.Objects;
+-import java.util.Optional;
++import java.util.*;
+ 
+ @Service
+ @Slf4j
+@@ -33,27 +41,32 @@
+     private final IProfileDao profileDao;
+     private final IUserDao userDao;
+     private final ISkillDao skillDao;
++    private final IRateDao rateDao;
+     private final ModelMapper modelMapper;
++    private final CacheManager cacheManager;
+ 
+     @Autowired
+-    public ProfileService(IProfileDao profileDao, IUserDao userDao, ISkillDao skillDao, ModelMapper modelMapper) {
++    public ProfileService(IProfileDao profileDao, IUserDao userDao, ISkillDao skillDao, ModelMapper modelMapper, IRateDao rateDao, CacheManager cacheManager) {
+         this.profileDao = profileDao;
+         this.userDao = userDao;
+         this.skillDao = skillDao;
++        this.rateDao = rateDao;
+         this.modelMapper = modelMapper;
++        this.cacheManager = cacheManager;
+     }
+ 
+     @Override
+-    protected ProfileDTO converDomainToDto(ProfileDomainImpl domain) {
++    protected ProfileDTO convertDomainToDto(ProfileDomainImpl domain) {
+         return modelMapper.map(domain, ProfileDTO.class);
+     }
+ 
+     @Override
+-    protected ProfileDomainImpl converDtoToDomain(ProfileDTO dto) {
++    protected ProfileDomainImpl convertDtoToDomain(ProfileDTO dto) {
+         return modelMapper.map(dto, ProfileDomainImpl.class);
+     }
+ 
+     @Override
++    @CachePut(value = "profilesCache", key = "'api_profile_' + #result.id", condition = "#result != null")
+     public ProfileDTO save(ProfileDTO dto) {
+         validateProfileData(dto);
+         log.info("Starting profile save service for profile user_id: {}", dto.getUserId());
+@@ -68,10 +81,10 @@
+             throw new InvalidDataException("The profile with user_id " + dto.getUserId() + " already exists");
+         }
+         try {
+-            ProfileDomainImpl profile = converDtoToDomain(dto);
++            ProfileDomainImpl profile = convertDtoToDomain(dto);
+             ProfileDomainImpl savedProfile = profileDao.save(profile);
+             log.info("Profile saved successfully with ID: {}", savedProfile.getId());
+-            return converDomainToDto(savedProfile);
++            return convertDomainToDto(savedProfile);
+         } catch (Exception e) {
+             log.error("An unexpected error occurred while saving profile: {}", dto.getUserId(), e);
+             throw new RuntimeException("Error saving the profile", e);
+@@ -79,38 +92,97 @@
+     }
+ 
+     @Override
++    @Cacheable(value = "profilesCache", key = "'api_profile_' + #id")
+     public ProfileDTO getById(String id) {
+         log.info("Starting profile get by id service for profile ID: {}", id);
+         return profileDao.findById(id)
+-                .map(this::converDomainToDto)
++                .map(this::convertDomainToDto)
+                 .orElseThrow(() -> new NotFoundException("Profile", id));
+     }
+ 
+     @Override
+     public ProfileResult getAll(Pageable pageable) {
+         log.info("Starting profile get all service");
+-        Page<ProfileDomainImpl> profiles = profileDao.findAll(pageable);
+-        List<ProfileDTO> profilesDTO = profiles.getContent().stream()
+-                .map(this::converDomainToDto)
+-                .toList();
++        Page<String> profileIds = profileDao.findAllIds(pageable);
++        List<ProfileDTO> profileDTOs = new ArrayList<>();
++
++        Cache cache = cacheManager.getCache("profilesCache");
++        for (String profileId : profileIds.getContent()) {
++            ProfileDTO cachedProfile = cache != null ? cache.get("api_profile_" + profileId, ProfileDTO.class) : null;
++            if (cachedProfile != null) {
++                log.info("Profile {} found in cache", profileId);
++                profileDTOs.add(cachedProfile);
++            } else {
++                log.info("Profile {} not found in cache", profileId);
++                ProfileDomainImpl profile = profileDao.findById(profileId).orElse(null);
++                if (profile != null) {
++                    ProfileDTO profileDTO = convertDomainToDto(profile);
++                    if (cache != null) {
++                        cache.put("api_profile_" + profileId, profileDTO);
++                        log.info("Profile {} saved in cache", profileId);
++                    }
++                    profileDTOs.add(profileDTO);
++                }
++            }
++        }
++        ProfileResult result = new ProfileResult();
++        result.setProfiles(profileDTOs);
++        return result;
++    }
++
++    public ProfileResult getProfilesBySkill(String skillId, Pageable pageable) {
++        log.info("Starting profile get by skill service for skill id: {}", skillId);
++
++        Optional<SkillDomainImpl> skillOpt = skillDao.findById(skillId);
++        if (skillOpt.isEmpty()) {
++            log.warn("Attempt to get profiles for a skill that does not exist: {}", skillId);
++            throw new InvalidDataException("Skill with id " + skillId + " not found");
++        }
++
++        Page<ProfileDomainImpl> profilesPage = profileDao.findAllBySkills_Id(skillId, pageable);
++        List<ProfileDTO> profileDTOs = new ArrayList<>();
++
++        Cache cache = cacheManager.getCache("profilesCache");
++
++        for (ProfileDomainImpl profile : profilesPage.getContent()) {
++            String cacheKey = "api_profile_" + profile.getId();
++            ProfileDTO cachedProfile = cache != null ? cache.get(cacheKey, ProfileDTO.class) : null;
++
++            if (cachedProfile != null) {
++                log.info("Profile {} found in cache", profile.getId());
++                profileDTOs.add(cachedProfile);
++            } else {
++                log.info("Profile {} not found in cache", profile.getId());
++                ProfileDTO profileDTO = convertDomainToDto(profile);
++                profileDTOs.add(profileDTO);
++                if (cache != null) {
++                    cache.put(cacheKey, profileDTO);
++                    log.info("Profile {} saved in cache", profile.getId());
++                }
++            }
++        }
++
+         ProfileResult result = new ProfileResult();
+-        result.setProfiles(profilesDTO);
++        result.setProfiles(profileDTOs);
+         return result;
+     }
+ 
++
++    @CacheEvict(value = "profilesCache", key = "'api_profile_' + #id")
+     public Boolean delete(String id) {
+         log.info("Starting profile delete service for profile ID: {}", id);
+         Optional<ProfileDomainImpl> profile = profileDao.findById(id);
+-        if (profile.isPresent()) {
+-            profileDao.delete(profile.get());
+-            log.info("Profile deleted successfully with ID: {}", id);
+-            return true;
+-        } else {
+-            log.warn("Attempt to delete a profile that does not exist: {}", id);
+-            return false;
+-        }
++        if (profile.isEmpty()) {
++            log.warn("Attempt to delete a profile that does not exist: {}", id);
++            return false;
++        }
++        profileDao.delete(profile.get());
++        log.info("Profile deleted successfully with ID: {}", id);
++        return true;
+     }
+ 
++    @CacheEvict(value = "profilesCache", key = "'api_profile_' + #result.id", condition = "#result != null")
++    @CachePut(value = "profilesCache", key = "'api_profile_' + #result.id", condition = "#result != null")
+     public ProfileDTO update(String id, ProfileDTO dto) {
+         log.info("Starting update for profile with id: {}", id);
+ 
+@@ -121,53 +193,61 @@
+         }
+ 
+         Optional<ProfileDomainImpl> existingProfile = profileDao.findById(id);
+-        if (existingProfile.isEmpty() || existingProfile.get().getUser().getId().equals(dto.getUserId())) {
+-            try {
+-                ProfileDomainImpl updatedProfile = profileDao.save(converDtoToDomain(dto));
+-                log.info("Profile with id {} updated successfully", updatedProfile.getId());
+-                return converDomainToDto(updatedProfile);
+-            } catch (Exception e) {
+-                log.error("An unexpected error occurred while updating profile with id: {}", id, e);
+-                throw new RuntimeException("Error updating the profile", e);
+-            }
+-        }
+-        else {
+-            log.warn("Attempt to update a profile that does not belong to the user");
+-            throw new InvalidDataException("Profile with id " + id + " does not belong to the user");
++        if (existingProfile.isPresent() && existingProfile.get().getUser().getId().equals(dto.getUserId())) {
++            log.warn("Attempt to update a profile that does not belong to the user");
++            throw new InvalidDataException("Profile with id " + id + " does not belong to the user");
++        }
++        try {
++            ProfileDomainImpl updatedProfile = profileDao.save(convertDtoToDomain(dto));
++            log.info("Profile with id {} updated successfully", updatedProfile.getId());
++            return convertDomainToDto(updatedProfile);
++        } catch (Exception e) {
++            log.error("An unexpected error occurred while updating profile with id: {}", id, e);
++            throw new RuntimeException("Error updating the profile", e);
++        }
++    }
++
++    @Cacheable(value = "ratesCache", key = "'api_profile_' + #profileId + '_rate_' + #rateId")
++    public RateDTO getRateById(String profileId, String rateId) {
++        log.info("Starting profile get rate by id service for profile id: {}", profileId);
++        Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);
++        if (profileOpt.isEmpty()) {
++            log.warn("Profile with id {} not found", profileId);
++            throw new InvalidDataException("Profile with id " + profileId + " not found");
+         }
++        RateDomainImpl rate = profileOpt.get().getRates().stream()
++                .filter(r -> Objects.equals(r.getId(), rateId))
++                .findFirst()
++                .orElseThrow(() -> new InvalidDataException("Rate with id " + rateId + " not found"));
++
++        return modelMapper.map(rate, RateDTO.class);
+     }
+ 
+-    public ProfileResult getByTag(String tag, Pageable pageable) {
+-        log.info("Starting profile get by tag service for profile tag: {}", tag);
+-        Page<ProfileDomainImpl> profiles = profileDao.findBySkills_NameContaining(tag, pageable);
+-        List<ProfileDTO> profilesDTO = profiles.getContent().stream()
+-                .map(this::converDomainToDto)
+-                .toList();
+-        ProfileResult result = new ProfileResult();
+-        result.setProfiles(profilesDTO);
+-        return result;
+-    }
+-    @Transactional
+-    public ProfileDTO addRate(String id, RateDTO dto) {
+-        log.info("Starting profile add rate service for profile id: {}", id);
++    @CachePut(value = "ratesCache", key = "'api_profile_' + #id + '_rate_' + #result.id", condition = "#result != null")
++    public RateDTO addRate(String id, RateDTO dto) {
++        validateRateData(dto);
++        log.info("Starting profile add rate service for profile id: {}", dto);
+         Optional<ProfileDomainImpl> existingProfileOpt = profileDao.findById(id);
+-        if (existingProfileOpt.isPresent()) {
+-            ProfileDomainImpl existingProfile = existingProfileOpt.get();
+-
+-            RateDomainImpl rate = modelMapper.map(dto, RateDomainImpl.class);
+-            rate.setProfile(existingProfile);
+-            existingProfile.addRate(rate);
+-            log.info("Rate before save: {}", rate);
+-            ProfileDomainImpl savedProfile = profileDao.save(existingProfile);
+-            log.info("Profile with id {} updated successfully", savedProfile.getId());
+-            return converDomainToDto(savedProfile);
+-        } else {
+-            log.warn("Attempt to update a profile that does not exist: {}", id);
+-            throw new InvalidDataException("Profile with id " + id + " not found");
+-        }
++        if (existingProfileOpt.isEmpty()) {
++            log.warn("Attempt to add a rate to a profile that does not exist: {}", id);
++            throw new InvalidDataException("Profile with id " + id + " not found");
++        }
++        ProfileDomainImpl existingProfile = existingProfileOpt.get();
++        if (existingProfile.getRates().stream().anyMatch(r -> Objects.equals(r.getRateType(), dto.getRateType()))) {
++            log.warn("Attempt to add a rate that already exists: {}", id);
++            throw new InvalidDataException("Rate with rateType " + dto.getRateType() + " already exists");
++        }
++        RateDomainImpl rate = modelMapper.map(dto, RateDomainImpl.class);
++        rate.setProfile(existingProfile);
++        existingProfile.addRate(rate);
++        log.info("Rate before save: {}", rate);
++        ProfileDomainImpl savedProfile = profileDao.save(existingProfile);
++        log.info("Rate saved successfully with ID: {}", savedProfile.getId());
++        return modelMapper.map(rate, RateDTO.class);
+     }
+ 
+-    public ProfileDTO removeRate(String id, String rateId) {
++    @CacheEvict(value = "ratesCache", key = "'api_profile_' + #id + '_rate_' + #rateId")
++    public boolean removeRate(String id, String rateId) {
+         log.info("Starting profile remove rate service for profile id: {}", id);
+         Optional<ProfileDomainImpl> existingProfileOpt = profileDao.findById(id);
+         if (existingProfileOpt.isPresent()) {
+@@ -176,9 +256,9 @@
+                     .findFirst()
+                     .orElseThrow(() -> new InvalidDataException("Rate with id " + rateId + " not found"));
+             existingProfileOpt.get().removeRate(rate);
+-            ProfileDomainImpl savedProfile = profileDao.save(existingProfileOpt.get());
+-            log.info("Profile with id {} updated successfully", savedProfile.getId());
+-            return converDomainToDto(savedProfile);
++            profileDao.save(existingProfileOpt.get());
++            log.info("Rate removed successfully with ID: {}", rateId);
++            return true;
+         } else {
+             log.warn("Attempt to update a profile that does not exist: {}", id);
+             throw new InvalidDataException("Profile with id " + id + " not found");
+@@ -186,36 +266,132 @@
+     }
+ 
+ 
++    public RateResult getRates(String profileId, Pageable pageable) {
++        log.info("Starting profile get rates service for profile id: {}", profileId);
++        Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);
++
++        if (profileOpt.isEmpty()) {
++            log.warn("Attempt to get rates for a profile that does not exist: {}", profileId);
++            throw new InvalidDataException("Profile with id " + profileId + " not found");
++        }
+ 
+-    public ProfileDTO addSkillToProfile(String profileId, String skillId) {
++        ProfileDomainImpl profile = profileOpt.get();
++        List<RateDTO> rateDTOs = new ArrayList<>();
++        Cache cache = cacheManager.getCache("ratesCache");
++
++        for (RateDomainImpl rate : profile.getRates()) {
++            String cacheKey = "api_profile_" + profileId + "_rate_" + rate.getId();
++            RateDTO cachedRate = cache != null ? cache.get(cacheKey, RateDTO.class) : null;
++            if (cachedRate != null) {
++                log.info("Rate {} found in cache", rate.getId());
++                rateDTOs.add(cachedRate);
++            } else {
++                log.info("Rate {} not found in cache", rate.getId());
++                RateDTO rateDTO = modelMapper.map(rate, RateDTO.class);
++                rateDTOs.add(rateDTO);
++                if (cache != null) {
++                    cache.put(cacheKey, rateDTO);
++                    log.info("Rate {} saved in cache", rate.getId());
++                }
++            }
++        }
++
++        RateResult result = new RateResult();
++        result.setRates(rateDTOs);
++        return result;
++    }
++
++
++    public SkillResult getSkills(String profileId, Pageable pageable) {
++        log.info("Starting profile get skills service for profile id: {}", profileId);
+         Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);
+-        if (profileOpt.isPresent()) {
+-            ProfileDomainImpl profile = profileOpt.get();
+-
+-            Optional<SkillDomainImpl> skillOpt = skillDao.findById(skillId);
+-            if (skillOpt.isPresent()) {
+-                SkillDomainImpl skill = skillOpt.get();
+-                profile.getSkills().add(skill);
+-
+-                ProfileDomainImpl updatedProfile = profileDao.save(profile);
++
++        if (profileOpt.isEmpty()) {
++            log.warn("Attempt to get skills for a profile that does not exist: {}", profileId);
++            throw new InvalidDataException("Profile with id " + profileId + " not found");
++        }
++
++        ProfileDomainImpl profile = profileOpt.get();
++        Set<SkillDomainImpl> skills = profile.getSkills();
++        List<SkillDTO> skillDTOs = new ArrayList<>();
++        Cache cache = cacheManager.getCache("skillsCache");
++
++        for (SkillDomainImpl skill : skills) {
++            String cacheKey = "api_skill_" + skill.getId();  // Se guarda solo por skillId
++            SkillDTO cachedSkill = cache != null ? cache.get(cacheKey, SkillDTO.class) : null;
++            if (cachedSkill != null) {
++                log.info("Skill {} found in cache", skill.getId());
++                skillDTOs.add(cachedSkill);
++            } else {
++                log.info("Skill {} not found in cache", skill.getId());
++                SkillDTO skillDTO = modelMapper.map(skill, SkillDTO.class);
++                skillDTOs.add(skillDTO);
++                if (cache != null) {
++                    cache.put(cacheKey, skillDTO);
++                    log.info("Skill {} saved in cache", skill.getId());
++                }
++            }
++        }
++
++        SkillResult result = new SkillResult();
++        result.setSkills(skillDTOs);
++        return result;
++    }
++
++
++    @CachePut(value = "skillsCache", key = "'api_skill_' + #skillId")
++    public String addSkillToProfile(String profileId, String skillJson) {
++        Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);
++        ObjectMapper objectMapper = new ObjectMapper();
++        String skillId;
++        try {
++            JsonNode jsonNode = objectMapper.readTree(skillJson);
++            skillId = jsonNode.get("skillId").asText();
++        } catch (JsonProcessingException e) {
++            throw new InvalidDataException("Invalid JSON format for skillId");
++        }
++
++        if (profileOpt.isEmpty()) {
++            log.warn("Attempt to add a skill to a profile that does not exist: {}", profileId);
++            throw new InvalidDataException("Profile with id " + profileId + " not found");
++        }
++
++        ProfileDomainImpl profile = profileOpt.get();
++        Optional<SkillDomainImpl> skillOpt = skillDao.findById(skillId);
++        if (skillOpt.isEmpty()) {
++            log.warn("Attempt to add a skill that does not exist: {}", skillId);
++            throw new InvalidDataException("Skill with id " + skillId + " not found");
++        }
++
++        if (profile.getSkills().stream().anyMatch(s -> Objects.equals(s.getId(), skillId))) {
++            log.warn("Attempt to add a skill that already exists: {}", skillId);
++            throw new InvalidDataException("Skill with id " + skillId + " already exists");
++        }
++
++        SkillDomainImpl skill = skillOpt.get();
++        profile.getSkills().add(skill);
++        profileDao.save(profile);
+ 
+-                return converDomainToDto(updatedProfile);
+-            } else {
+-                throw new InvalidDataException("Skill with id " + skillId + " not found");
+-            }
+-        } else {
+-            throw new InvalidDataException("Profile with id " + profileId + " not found");
++        // Guardar en caché el skill
++        SkillDTO skillDTO = modelMapper.map(skill, SkillDTO.class);
++        Cache cache = cacheManager.getCache("skillsCache");
++        if (cache != null) {
++            cache.put("api_skill_" + skillId, skillDTO);
++            log.info("Skill {} saved in cache", skillId);
+         }
++
++        return "Skill added successfully";
+     }
+ 
+-    public ProfileDTO removeSkillFromProfile(String profileId, String skillId) {
++
++    @CacheEvict(value = "skillsCache", key = "'api_skill_' + #skillId")
++    public String removeSkillFromProfile(String profileId, String skillId) {
+         Optional<ProfileDomainImpl> profileOpt = profileDao.findById(profileId);
+         if (profileOpt.isPresent()) {
+             ProfileDomainImpl profile = profileOpt.get();
+             profile.getSkills().removeIf(skill -> Objects.equals(skill.getId(), skillId));
+-
+-            ProfileDomainImpl updatedProfile = profileDao.save(profile);
+-            return converDomainToDto(updatedProfile);
++            profileDao.save(profile);
++            return "Skill removed successfully";
+         } else {
+             throw new InvalidDataException("Profile with id " + profileId + " not found");
+         }
+@@ -227,9 +403,14 @@
+             log.error("Invalid profile data: profile user_id is null or empty");
+             throw new InvalidDataException("Profile user_id cannot be null or empty");
+         }
+-        if (dto.getRate() < 0) {
+-            log.error("Invalid profile data: profile rate is null or invalid");
+-            throw new InvalidDataException("Profile rate cannot be null or invalid");
++    }
++
++    private void validateRateData(RateDTO dto) {
++        log.info("Starting rate validation{}", dto);
++        if (dto.getAmount() <= 0) {
++            log.error("Invalid rate data: rate rate is null or invalid");
++            throw new InvalidDataException("Rate amount cannot be below 0");
+         }
+     }
+ }
++
+Index: BEANS/src/main/java/com/fiuni/marketplacefreelancer/domain/user/UserDomainImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.marketplacefreelancer.domain.user;\r\n\r\nimport com.fiuni.marketplacefreelancer.domain.base.IBaseDomain;\r\nimport com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;\r\nimport jakarta.persistence.*;\r\nimport lombok.Data;\r\nimport org.springframework.data.annotation.CreatedDate;\r\nimport org.springframework.data.annotation.LastModifiedDate;\r\nimport org.springframework.data.jpa.domain.support.AuditingEntityListener;\r\n\r\nimport java.io.Serial;\r\nimport java.time.LocalDateTime;\r\n\r\n@Entity\r\n@Table(name = \"users\")\r\n@Data\r\n@EntityListeners(AuditingEntityListener.class)\r\npublic class UserDomainImpl implements IBaseDomain {\r\n\r\n    @Serial\r\n    private static final long serialVersionUID = 1L;\r\n\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.UUID)\r\n    @Column(name = \"id\", nullable = false, unique = true)\r\n    private String id;\r\n\r\n    @ManyToOne\r\n    @JoinColumn(name = \"role_id\", nullable = false)\r\n    private RoleDomainImpl role;\r\n\r\n    @Column(name = \"name\", length = 100)\r\n    private String name;\r\n\r\n    @Column(name = \"email\", nullable = false, unique = true, length = 150)\r\n    private String email;\r\n\r\n    @Column(name = \"password\", length = 60)\r\n    private String password;\r\n\r\n    @Column(name = \"phone\", length = 15)\r\n    private String phone;\r\n\r\n    @CreatedDate\r\n    @Column(name = \"createdAt\", nullable = false)\r\n    private LocalDateTime createdAt;\r\n\r\n    @LastModifiedDate\r\n    @Column(name = \"updatedAt\", nullable = false)\r\n    private LocalDateTime updatedAt;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BEANS/src/main/java/com/fiuni/marketplacefreelancer/domain/user/UserDomainImpl.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/domain/user/UserDomainImpl.java
+--- a/BEANS/src/main/java/com/fiuni/marketplacefreelancer/domain/user/UserDomainImpl.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/domain/user/UserDomainImpl.java	(date 1727379404364)
+@@ -7,15 +7,20 @@
+ import org.springframework.data.annotation.CreatedDate;
+ import org.springframework.data.annotation.LastModifiedDate;
+ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
++import org.springframework.security.core.GrantedAuthority;
++import org.springframework.security.core.authority.SimpleGrantedAuthority;
++import org.springframework.security.core.userdetails.UserDetails;
+ 
+ import java.io.Serial;
+ import java.time.LocalDateTime;
++import java.util.Collection;
++import java.util.List;
+ 
+ @Entity
+ @Table(name = "users")
+ @Data
+ @EntityListeners(AuditingEntityListener.class)
+-public class UserDomainImpl implements IBaseDomain {
++public class UserDomainImpl implements IBaseDomain, UserDetails {
+ 
+     @Serial
+     private static final long serialVersionUID = 1L;
+@@ -48,4 +53,15 @@
+     @LastModifiedDate
+     @Column(name = "updatedAt", nullable = false)
+     private LocalDateTime updatedAt;
++
++    @Override
++    public Collection<? extends GrantedAuthority> getAuthorities() {
++        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase());
++        return List.of(authority);
++    }
++
++    @Override
++    public String getUsername() {
++        return email;
++    }
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/Role/RoleService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.service.Role;\r\n\r\nimport com.fiuni.apiusuarios.dao.role.IRoleDao;\r\nimport com.fiuni.apiusuarios.service.base.BaseServiceImpl;\r\nimport com.fiuni.apiusuarios.utils.AlreadyExistsException;\r\nimport com.fiuni.apiusuarios.utils.InvalidDataException;\r\nimport com.fiuni.apiusuarios.utils.NotFoundException;\r\nimport com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.dto.Role.RoleDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.Role.RoleResult;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.modelmapper.ModelMapper;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\nimport java.util.Optional;\r\n\r\n@Service\r\n@Slf4j\r\npublic class RoleService extends BaseServiceImpl<RoleDTO, RoleDomainImpl, RoleResult> {\r\n\r\n    private final IRoleDao roleDao;\r\n    private final ModelMapper modelMapper;\r\n\r\n    @Autowired\r\n    public RoleService(IRoleDao roleDao, ModelMapper modelMapper) {\r\n        this.roleDao = roleDao;\r\n        this.modelMapper = modelMapper;\r\n    }\r\n\r\n    @Override\r\n    protected RoleDTO converDomainToDto(RoleDomainImpl domain) {\r\n        return modelMapper.map(domain, RoleDTO.class);\r\n    }\r\n\r\n    @Override\r\n    protected RoleDomainImpl converDtoToDomain(RoleDTO dto) {\r\n        return modelMapper.map(dto, RoleDomainImpl.class);\r\n    }\r\n\r\n    @Override\r\n    public RoleDTO save(RoleDTO dto) {\r\n\r\n        validateRoleData(dto);\r\n\r\n        log.info(\"Starting role save service for role name: {}\", dto.getName());\r\n\r\n        Optional<RoleDomainImpl> existingRole = roleDao.findByName(dto.getName());\r\n        if (existingRole.isPresent()) {\r\n            log.warn(\"Attempt to create a role that already exists: {}\", dto.getName());\r\n            throw new AlreadyExistsException(\"The role with name \" + dto.getName() + \" already exists\");\r\n        }\r\n\r\n        try {\r\n            RoleDomainImpl role = converDtoToDomain(dto);\r\n\r\n            RoleDomainImpl savedRole = roleDao.save(role);\r\n            log.info(\"Role saved successfully with ID: {}\", savedRole.getId());\r\n\r\n            return converDomainToDto(savedRole);\r\n\r\n        } catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while saving role: {}\", dto.getName(), e);\r\n            throw new RuntimeException(\"Error saving the role\", e);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public RoleDTO getById(String id) {\r\n        log.info(\"Starting role get by id service for role ID: {}\", id);\r\n        return roleDao.findById(id)\r\n                .map(this::converDomainToDto)\r\n                .orElseThrow(() -> new NotFoundException(\"Role\", id));\r\n    }\r\n\r\n    @Override\r\n    public RoleResult getAll(Pageable pageable) {\r\n        log.info(\"Starting role get all service\");\r\n        Page<RoleDomainImpl> roles = roleDao.findAll(pageable);\r\n        List<RoleDTO> rolesDTO = roles.getContent().stream()\r\n                .map(this::converDomainToDto)\r\n                .toList();\r\n        RoleResult result = new RoleResult();\r\n        result.setRoles(rolesDTO);\r\n        return result;\r\n    }\r\n\r\n    public Boolean delete(String id) {\r\n        log.info(\"Starting role delete service for role ID: {}\", id);\r\n        Optional<RoleDomainImpl> role = roleDao.findById(id);\r\n        if (role.isPresent()) {\r\n            roleDao.delete(role.get());\r\n            log.info(\"Role deleted successfully with ID: {}\", id);\r\n            return true;\r\n        } else {\r\n            log.warn(\"Attempt to delete a role that does not exist: {}\", id);\r\n            return false;\r\n        }\r\n    }\r\n\r\n    public RoleDTO update(String id, RoleDTO dto) {\r\n        log.info(\"Starting update for role with id: {}\", id);\r\n\r\n        Optional<RoleDomainImpl> existingRoleOpt = roleDao.findById(id);\r\n        if (existingRoleOpt.isEmpty()) {\r\n            log.warn(\"Role with id {} not found\", id);\r\n            throw new InvalidDataException(\"Role with id \" + id + \" not found\");\r\n        }\r\n\r\n        RoleDomainImpl existingRole = existingRoleOpt.get();\r\n\r\n        if (dto.getName() != null && !dto.getName().trim().isEmpty()) {\r\n            Optional<RoleDomainImpl> roleByName = roleDao.findByName(dto.getName());\r\n            if (roleByName.isPresent() && !roleByName.get().getId().equals(id)) {\r\n                log.warn(\"Attempt to update role with name {} which already exists\", dto.getName());\r\n                throw new AlreadyExistsException(\"Role with name \" + dto.getName() + \" already exists\");\r\n            }\r\n            existingRole.setName(dto.getName());\r\n        }\r\n\r\n        try {\r\n            RoleDomainImpl updatedRole = roleDao.save(existingRole);\r\n            log.info(\"Role with id {} updated successfully\", updatedRole.getId());\r\n\r\n            return modelMapper.map(updatedRole, RoleDTO.class);\r\n        } catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while updating role with id: {}\", id, e);\r\n            throw new RuntimeException(\"Error updating the role\", e);\r\n        }\r\n    }\r\n\r\n\r\n    public RoleDTO getByName(String name) {\r\n        log.info(\"Starting role get by name service for role name: {}\", name);\r\n        return roleDao.findByName(name)\r\n                .map(this::converDomainToDto)\r\n                .orElseThrow(() -> new NotFoundException(\"Role\", name));\r\n    }\r\n\r\n    private void validateRoleData(RoleDTO dto) {\r\n        if (dto.getName() == null || dto.getName().trim().isEmpty()) {\r\n            log.error(\"Invalid role data: role name is null or empty\");\r\n            throw new InvalidDataException(\"Role name cannot be null or empty\");\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/Role/RoleService.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/Role/RoleService.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/Role/RoleService.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/Role/RoleService.java	(date 1726869887315)
+@@ -2,19 +2,25 @@
+ 
+ import com.fiuni.apiusuarios.dao.role.IRoleDao;
+ import com.fiuni.apiusuarios.service.base.BaseServiceImpl;
+-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
+-import com.fiuni.apiusuarios.utils.InvalidDataException;
+-import com.fiuni.apiusuarios.utils.NotFoundException;
++import com.fiuni.marketplacefreelancer.utils.AlreadyExistsException;
++import com.fiuni.marketplacefreelancer.utils.InvalidDataException;
++import com.fiuni.marketplacefreelancer.utils.NotFoundException;
+ import com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;
+ import com.fiuni.marketplacefreelancer.dto.Role.RoleDTO;
+ import com.fiuni.marketplacefreelancer.dto.Role.RoleResult;
+ import lombok.extern.slf4j.Slf4j;
+ import org.modelmapper.ModelMapper;
+ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.cache.Cache;
++import org.springframework.cache.CacheManager;
++import org.springframework.cache.annotation.CacheEvict;
++import org.springframework.cache.annotation.CachePut;
++import org.springframework.cache.annotation.Cacheable;
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.stereotype.Service;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
+ 
+@@ -24,28 +30,29 @@
+ 
+     private final IRoleDao roleDao;
+     private final ModelMapper modelMapper;
++    private final CacheManager cacheManager;
+ 
+     @Autowired
+-    public RoleService(IRoleDao roleDao, ModelMapper modelMapper) {
++    public RoleService(IRoleDao roleDao, ModelMapper modelMapper, CacheManager cacheManager) {
+         this.roleDao = roleDao;
+         this.modelMapper = modelMapper;
++        this.cacheManager = cacheManager;
+     }
+ 
+     @Override
+-    protected RoleDTO converDomainToDto(RoleDomainImpl domain) {
++    protected RoleDTO convertDomainToDto(RoleDomainImpl domain) {
+         return modelMapper.map(domain, RoleDTO.class);
+     }
+ 
+     @Override
+-    protected RoleDomainImpl converDtoToDomain(RoleDTO dto) {
++    protected RoleDomainImpl convertDtoToDomain(RoleDTO dto) {
+         return modelMapper.map(dto, RoleDomainImpl.class);
+     }
+ 
+     @Override
++    @CachePut(value = "rolesCache", key = "'api_role_' + #result.id", condition = "#result != null")
+     public RoleDTO save(RoleDTO dto) {
+-
+         validateRoleData(dto);
+-
+         log.info("Starting role save service for role name: {}", dto.getName());
+ 
+         Optional<RoleDomainImpl> existingRole = roleDao.findByName(dto.getName());
+@@ -55,12 +62,10 @@
+         }
+ 
+         try {
+-            RoleDomainImpl role = converDtoToDomain(dto);
+-
++            RoleDomainImpl role = convertDtoToDomain(dto);
+             RoleDomainImpl savedRole = roleDao.save(role);
+             log.info("Role saved successfully with ID: {}", savedRole.getId());
+-
+-            return converDomainToDto(savedRole);
++            return convertDomainToDto(savedRole);
+ 
+         } catch (Exception e) {
+             log.error("An unexpected error occurred while saving role: {}", dto.getName(), e);
+@@ -69,25 +74,59 @@
+     }
+ 
+     @Override
++    @Cacheable(value = "rolesCache", key = "'api_role_' + #id")
+     public RoleDTO getById(String id) {
+         log.info("Starting role get by id service for role ID: {}", id);
+         return roleDao.findById(id)
+-                .map(this::converDomainToDto)
++                .map(this::convertDomainToDto)
+                 .orElseThrow(() -> new NotFoundException("Role", id));
+     }
+ 
++    @Cacheable(value = "rolesCache", key = "'api_role_name_' + #name")
++    public RoleDTO getByName(String name) {
++        log.info("Starting role get by name service for role name: {}", name);
++        return roleDao.findByName(name)
++                .map(this::convertDomainToDto)
++                .orElseThrow(() -> new NotFoundException("Role", name));
++    }
++
+     @Override
+     public RoleResult getAll(Pageable pageable) {
+         log.info("Starting role get all service");
+-        Page<RoleDomainImpl> roles = roleDao.findAll(pageable);
+-        List<RoleDTO> rolesDTO = roles.getContent().stream()
+-                .map(this::converDomainToDto)
+-                .toList();
++
++        Page<String> roleIds = roleDao.findAllIds(pageable);
++        List<RoleDTO> roleDTOs = new ArrayList<>();
++
++        Cache cache = cacheManager.getCache("rolesCache");
++        log.info("Cache found: {}", cache != null);
++        for (String roleId : roleIds.getContent()) {
++            log.info("Role ID: {}", roleId);
++            RoleDTO cachedRole = cache != null ? cache.get("api_role_" + roleId, RoleDTO.class) : null;
++            if (cachedRole != null) {
++                log.info("Role {} found in cache", roleId);
++                roleDTOs.add(cachedRole);
++            } else {
++                log.info("Role {} not found in cache", roleId);
++                RoleDomainImpl role = roleDao.findById(roleId).orElse(null);
++                if (role != null) {
++                    RoleDTO roleDTO = convertDomainToDto(role);
++                    if (cache != null) {
++                        cache.put("api_role_" + roleId, roleDTO);
++                        log.info("Role {} saved in cache", roleId);
++                    }
++                    roleDTOs.add(roleDTO);
++                }
++            }
++        }
++
+         RoleResult result = new RoleResult();
+-        result.setRoles(rolesDTO);
++        result.setRoles(roleDTOs);
++
+         return result;
+     }
+ 
++
++    @CacheEvict(value = "rolesCache", key = "'api_role_' + #id")
+     public Boolean delete(String id) {
+         log.info("Starting role delete service for role ID: {}", id);
+         Optional<RoleDomainImpl> role = roleDao.findById(id);
+@@ -101,6 +140,8 @@
+         }
+     }
+ 
++    @CacheEvict(value = "rolesCache", key = "'api_role_' + #result.id", condition = "#result != null")
++    @CachePut(value = "rolesCache", key = "'api_role_' + #result.id", condition = "#result != null")
+     public RoleDTO update(String id, RoleDTO dto) {
+         log.info("Starting update for role with id: {}", id);
+ 
+@@ -124,7 +165,6 @@
+         try {
+             RoleDomainImpl updatedRole = roleDao.save(existingRole);
+             log.info("Role with id {} updated successfully", updatedRole.getId());
+-
+             return modelMapper.map(updatedRole, RoleDTO.class);
+         } catch (Exception e) {
+             log.error("An unexpected error occurred while updating role with id: {}", id, e);
+@@ -132,19 +172,10 @@
+         }
+     }
+ 
+-
+-    public RoleDTO getByName(String name) {
+-        log.info("Starting role get by name service for role name: {}", name);
+-        return roleDao.findByName(name)
+-                .map(this::converDomainToDto)
+-                .orElseThrow(() -> new NotFoundException("Role", name));
+-    }
+-
+     private void validateRoleData(RoleDTO dto) {
+         if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+             log.error("Invalid role data: role name is null or empty");
+             throw new InvalidDataException("Role name cannot be null or empty");
+         }
+     }
+-
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/skill/SkillService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.service.skill;\r\n\r\nimport com.fiuni.apiusuarios.dao.skill.ISkillDao;\r\nimport com.fiuni.apiusuarios.service.base.BaseServiceImpl;\r\nimport com.fiuni.apiusuarios.utils.AlreadyExistsException;\r\nimport com.fiuni.apiusuarios.utils.InvalidDataException;\r\nimport com.fiuni.apiusuarios.utils.NotFoundException;\r\nimport com.fiuni.marketplacefreelancer.domain.skill.SkillDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.dto.Skill.SkillDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.Skill.SkillResult;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.modelmapper.ModelMapper;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\nimport java.util.Optional;\r\n\r\n@Service\r\n@Slf4j\r\npublic class SkillService extends BaseServiceImpl<SkillDTO, SkillDomainImpl, SkillResult> {\r\n\r\n    private final ISkillDao skillDao;\r\n    private final ModelMapper modelMapper;\r\n\r\n    @Autowired\r\n    public SkillService(ISkillDao skillDao, ModelMapper modelMapper) {\r\n        this.skillDao = skillDao;\r\n        this.modelMapper = modelMapper;\r\n    }\r\n\r\n    @Override\r\n    protected SkillDTO converDomainToDto(SkillDomainImpl domain) {\r\n        return modelMapper.map(domain, SkillDTO.class);\r\n    }\r\n\r\n    @Override\r\n    protected SkillDomainImpl converDtoToDomain(SkillDTO dto) {\r\n        return modelMapper.map(dto, SkillDomainImpl.class);\r\n    }\r\n\r\n    @Override\r\n    public SkillDTO save(SkillDTO dto) {\r\n        log.info(\"Starting skill save service for skill name: {}\", dto.getName());\r\n        validateSkillData(dto);\r\n\r\n        Optional<SkillDomainImpl> existingSkill = skillDao.findByName(dto.getName());\r\n        if (existingSkill.isPresent()) {\r\n            log.warn(\"Attempt to create a skill that already exists: {}\", dto.getName());\r\n            throw new AlreadyExistsException(\"The skill with name \" + dto.getName() + \" already exists\");\r\n        }\r\n        try {\r\n            SkillDomainImpl skill = converDtoToDomain(dto);\r\n            SkillDomainImpl savedSkill = skillDao.save(skill);\r\n            log.info(\"Skill saved successfully with ID: {}\", savedSkill.getId());\r\n            return converDomainToDto(savedSkill);\r\n        }catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while saving skill: {}\", dto.getName(), e);\r\n            throw new RuntimeException(\"Error saving the skill\", e);\r\n        }\r\n\r\n    }\r\n\r\n    @Override\r\n    public SkillDTO getById(String id) {\r\n        log.info(\"Starting skill get by id service for skill ID: {}\", id);\r\n        return skillDao.findById(id)\r\n                .map(this::converDomainToDto)\r\n                .orElseThrow(() -> new NotFoundException(\"Skill\", id));\r\n    }\r\n\r\n\r\n    @Override\r\n    public SkillResult getAll(Pageable pageable) {\r\n        log.info(\"Starting skill get all service\");\r\n        Page<SkillDomainImpl> skills = skillDao.findAll(pageable);\r\n        List<SkillDTO> skillDTOs = skills.getContent().stream()\r\n                .map(this::converDomainToDto)\r\n                .toList();\r\n        SkillResult result = new SkillResult();\r\n        result.setSkills(skillDTOs);\r\n        return result;\r\n    }\r\n\r\n    public Boolean delete(String id) {\r\n        log.info(\"Starting skill delete service for skill ID: {}\", id);\r\n        Optional<SkillDomainImpl> skill = skillDao.findById(id);\r\n        if (skill.isPresent()) {\r\n            skillDao.delete(skill.get());\r\n            log.info(\"Skill deleted successfully with ID: {}\", id);\r\n            return true;\r\n        } else {\r\n            log.warn(\"Attempt to delete a skill that does not exist: {}\", id);\r\n            return false;\r\n        }\r\n    }\r\n\r\n    public SkillDTO update(String id, SkillDTO dto) {\r\n        log.info(\"Starting update for skill with id: {}\", id);\r\n\r\n        Optional<SkillDomainImpl> existingSkillOpt = skillDao.findById(id);\r\n        if (existingSkillOpt.isEmpty()) {\r\n            log.warn(\"Skill with id {} not found\", id);\r\n            throw new InvalidDataException(\"Skill with id \" + id + \" not found\");\r\n        }\r\n\r\n        SkillDomainImpl existingSkill = existingSkillOpt.get();\r\n        validateSkillData(dto);\r\n\r\n        try {\r\n            existingSkill.setName(dto.getName());\r\n            SkillDomainImpl updatedSkill = skillDao.save(existingSkill);\r\n            log.info(\"Skill with id {} updated successfully\", updatedSkill.getId());\r\n\r\n            return modelMapper.map(updatedSkill, SkillDTO.class);\r\n        } catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while updating skill with id: {}\", id, e);\r\n            throw new RuntimeException(\"Error updating the skill\", e);\r\n        }\r\n\r\n\r\n    }\r\n\r\n    private void validateSkillData(SkillDTO dto) {\r\n        if (dto.getName() == null || dto.getName().trim().isEmpty()) {\r\n            log.error(\"Invalid skill data: skill name is null or empty\");\r\n            throw new InvalidDataException(\"Skill name cannot be null or empty\");\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/skill/SkillService.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/skill/SkillService.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/skill/SkillService.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/skill/SkillService.java	(date 1726869887328)
+@@ -2,19 +2,25 @@
+ 
+ import com.fiuni.apiusuarios.dao.skill.ISkillDao;
+ import com.fiuni.apiusuarios.service.base.BaseServiceImpl;
+-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
+-import com.fiuni.apiusuarios.utils.InvalidDataException;
+-import com.fiuni.apiusuarios.utils.NotFoundException;
++import com.fiuni.marketplacefreelancer.utils.AlreadyExistsException;
++import com.fiuni.marketplacefreelancer.utils.InvalidDataException;
++import com.fiuni.marketplacefreelancer.utils.NotFoundException;
+ import com.fiuni.marketplacefreelancer.domain.skill.SkillDomainImpl;
+ import com.fiuni.marketplacefreelancer.dto.Skill.SkillDTO;
+ import com.fiuni.marketplacefreelancer.dto.Skill.SkillResult;
+ import lombok.extern.slf4j.Slf4j;
+ import org.modelmapper.ModelMapper;
+ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.cache.Cache;
++import org.springframework.cache.CacheManager;
++import org.springframework.cache.annotation.CacheEvict;
++import org.springframework.cache.annotation.CachePut;
++import org.springframework.cache.annotation.Cacheable;
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.stereotype.Service;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
+ 
+@@ -24,24 +30,27 @@
+ 
+     private final ISkillDao skillDao;
+     private final ModelMapper modelMapper;
++    private final CacheManager cacheManager;
+ 
+     @Autowired
+-    public SkillService(ISkillDao skillDao, ModelMapper modelMapper) {
++    public SkillService(ISkillDao skillDao, ModelMapper modelMapper, CacheManager cacheManager) {
+         this.skillDao = skillDao;
+         this.modelMapper = modelMapper;
++        this.cacheManager = cacheManager;
+     }
+ 
+     @Override
+-    protected SkillDTO converDomainToDto(SkillDomainImpl domain) {
++    protected SkillDTO convertDomainToDto(SkillDomainImpl domain) {
+         return modelMapper.map(domain, SkillDTO.class);
+     }
+ 
+     @Override
+-    protected SkillDomainImpl converDtoToDomain(SkillDTO dto) {
++    protected SkillDomainImpl convertDtoToDomain(SkillDTO dto) {
+         return modelMapper.map(dto, SkillDomainImpl.class);
+     }
+ 
+     @Override
++    @CachePut(value = "skillsCache", key = "'api_skill_' + #result.id", condition = "#result != null")
+     public SkillDTO save(SkillDTO dto) {
+         log.info("Starting skill save service for skill name: {}", dto.getName());
+         validateSkillData(dto);
+@@ -52,10 +61,10 @@
+             throw new AlreadyExistsException("The skill with name " + dto.getName() + " already exists");
+         }
+         try {
+-            SkillDomainImpl skill = converDtoToDomain(dto);
++            SkillDomainImpl skill = convertDtoToDomain(dto);
+             SkillDomainImpl savedSkill = skillDao.save(skill);
+             log.info("Skill saved successfully with ID: {}", savedSkill.getId());
+-            return converDomainToDto(savedSkill);
++            return convertDomainToDto(savedSkill);
+         }catch (Exception e) {
+             log.error("An unexpected error occurred while saving skill: {}", dto.getName(), e);
+             throw new RuntimeException("Error saving the skill", e);
+@@ -64,26 +73,50 @@
+     }
+ 
+     @Override
++    @Cacheable(value = "skillsCache", key = "'api_skill_' + #id")
+     public SkillDTO getById(String id) {
+         log.info("Starting skill get by id service for skill ID: {}", id);
+         return skillDao.findById(id)
+-                .map(this::converDomainToDto)
++                .map(this::convertDomainToDto)
+                 .orElseThrow(() -> new NotFoundException("Skill", id));
+     }
+ 
+ 
+     @Override
+     public SkillResult getAll(Pageable pageable) {
++
+         log.info("Starting skill get all service");
+-        Page<SkillDomainImpl> skills = skillDao.findAll(pageable);
+-        List<SkillDTO> skillDTOs = skills.getContent().stream()
+-                .map(this::converDomainToDto)
+-                .toList();
++
++
++        Page<String> skillIds = skillDao.findAllIds(pageable);
++        List<SkillDTO> skillDTOs = new ArrayList<>();
++
++        Cache cache = cacheManager.getCache("skillsCache");
++        for (String skillId : skillIds.getContent()) {
++            SkillDTO cachedSkill = cache != null ? cache.get("api_skill_" + skillId, SkillDTO.class) : null;
++            if (cachedSkill != null) {
++                log.info("Skill {} found in cache", skillId);
++                skillDTOs.add(cachedSkill);
++            }else {
++                log.info("Skill {} not found in cache", skillId);
++                SkillDomainImpl skill = skillDao.findById(skillId).orElse(null);
++                if (skill != null) {
++                    SkillDTO skillDTO = convertDomainToDto(skill);
++                    if (cache != null) {
++                        cache.put("api_skill_" + skillId, skillDTO);
++                        log.info("Skill {} saved in cache", skillId);
++                    }
++                    skillDTOs.add(skillDTO);
++                }
++
++            }
++        }
+         SkillResult result = new SkillResult();
+         result.setSkills(skillDTOs);
+         return result;
+     }
+ 
++    @CacheEvict(value = "skillsCache", key = "'api_skill_' + #id")
+     public Boolean delete(String id) {
+         log.info("Starting skill delete service for skill ID: {}", id);
+         Optional<SkillDomainImpl> skill = skillDao.findById(id);
+@@ -97,6 +130,8 @@
+         }
+     }
+ 
++    @CacheEvict(value = "skillsCache", key = "'api_skill_' + #id", condition = "#result != null")
++    @CachePut(value = "skillsCache", key = "'api_skill_' + #result.id", condition = "#result != null")
+     public SkillDTO update(String id, SkillDTO dto) {
+         log.info("Starting update for skill with id: {}", id);
+ 
+@@ -119,8 +154,6 @@
+             log.error("An unexpected error occurred while updating skill with id: {}", id, e);
+             throw new RuntimeException("Error updating the skill", e);
+         }
+-
+-
+     }
+ 
+     private void validateSkillData(SkillDTO dto) {
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/user/UserService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.service.user;\r\n\r\nimport com.fiuni.apiusuarios.dao.role.IRoleDao;\r\nimport com.fiuni.apiusuarios.dao.user.IUserDao;\r\nimport com.fiuni.apiusuarios.service.base.BaseServiceImpl;\r\nimport com.fiuni.apiusuarios.utils.AlreadyExistsException;\r\nimport com.fiuni.apiusuarios.utils.InvalidDataException;\r\nimport com.fiuni.apiusuarios.utils.NotFoundException;\r\nimport com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;\r\nimport com.fiuni.marketplacefreelancer.dto.User.UserDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.User.UserResult;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.modelmapper.ModelMapper;\r\nimport org.slf4j.Logger;\r\nimport org.slf4j.LoggerFactory;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.cache.annotation.Cacheable;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.security.crypto.bcrypt.BCrypt;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\nimport java.util.Optional;\r\n\r\n@Service\r\n@Slf4j\r\npublic class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserResult> {\r\n\r\n\r\n\r\n    private final IUserDao userDao;\r\n    private final IRoleDao roleDao;\r\n    private final ModelMapper modelMapper;\r\n\r\n    @Autowired\r\n    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper) {\r\n        this.userDao = userDao;\r\n        this.roleDao = roleDao;\r\n        this.modelMapper = modelMapper;\r\n    }\r\n\r\n\r\n    @Override\r\n    protected UserDTO converDomainToDto(UserDomainImpl domain) {\r\n        return modelMapper.map(domain, UserDTO.class);\r\n    }\r\n\r\n    @Override\r\n    protected UserDomainImpl converDtoToDomain(UserDTO dto) {\r\n        return modelMapper.map(dto, UserDomainImpl.class);\r\n    }\r\n\r\n    @Override\r\n    public UserDTO save(UserDTO dto) {\r\n\r\n        log.info(\"Starting user save service for user email: {}\", dto.getEmail());\r\n        validateUserData(dto);\r\n\r\n\r\n        Optional<UserDomainImpl> existingUser = userDao.findByEmail(dto.getEmail());\r\n\r\n        Optional<RoleDomainImpl> role = roleDao.findById(dto.getRole_id());\r\n\r\n        if (existingUser.isPresent()) {\r\n            log.warn(\"Attempt to create a user that already exists: {}\", dto.getEmail());\r\n            throw new AlreadyExistsException(\"The user with email \" + dto.getEmail() + \" already exists\");\r\n        }\r\n        if (role.isEmpty()) {\r\n            log.warn(\"Attempt to create a user with role that does not exist: {}\", dto.getRole_id());\r\n            throw new NotFoundException(\"Role\", dto.getRole_id());\r\n        }\r\n        try {\r\n            UserDomainImpl user = converDtoToDomain(dto);\r\n            user.setRole(role.get());\r\n            user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));\r\n            UserDomainImpl savedUser = userDao.save(user);\r\n            log.info(\"User saved successfully with ID: {}\", savedUser.getId());\r\n            return converDomainToDto(savedUser);\r\n        } catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while saving user: {}\", dto.getEmail(), e);\r\n            throw new RuntimeException(\"Error saving the user\", e);\r\n        }\r\n    }\r\n\r\n    @Override\r\n    @Cacheable(value = \"user\", key = \"'api_user_' + #id\")\r\n    public UserDTO getById(String id) {\r\n        log.info(\"Starting user get by id service for user ID: {}\", id);\r\n        return userDao.findById(id)\r\n                .map(this::converDomainToDto)\r\n                .orElseThrow(() -> new NotFoundException(\"User\", id));\r\n    }\r\n\r\n    @Override\r\n    public UserResult getAll(Pageable pageable) {\r\n        log.info(\"Starting user get all service\");\r\n        Page<UserDomainImpl> users = userDao.findAll(pageable);\r\n\r\n        List<UserDTO> userDTOs = users.getContent().stream()\r\n                .map(this::converDomainToDto)\r\n                .toList();\r\n        UserResult userResult = new UserResult();\r\n        userResult.setUsers(userDTOs);\r\n        return userResult;\r\n    }\r\n\r\n    public Boolean delete(String id) {\r\n        log.info(\"Starting user delete service for user ID: {}\", id);\r\n        Optional<UserDomainImpl> user = userDao.findById(id);\r\n        if (user.isPresent()) {\r\n            userDao.delete(user.get());\r\n            log.info(\"User deleted successfully with ID: {}\", id);\r\n            return true;\r\n        } else {\r\n            log.warn(\"Attempt to delete a user that does not exist: {}\", id);\r\n            return false;\r\n        }\r\n    }\r\n\r\n    public UserDTO update(String id, UserDTO dto) {\r\n        log.info(\"Starting update for user with id: {}\", dto.getId());\r\n        validateUserData(dto);\r\n\r\n        Optional<UserDomainImpl> existingUserOpt = userDao.findById(dto.getId());\r\n        Optional<RoleDomainImpl> role = roleDao.findById(dto.getRole_id());\r\n        Optional<UserDomainImpl> userByEmail = userDao.findByEmail(dto.getEmail());\r\n        if (existingUserOpt.isEmpty()) {\r\n            log.warn(\"User with id {} not found\", dto.getId());\r\n            throw new InvalidDataException(\"User with id \" + dto.getId() + \" not found\");\r\n        }\r\n        if (role.isEmpty()) {\r\n            log.warn(\"Attempt to update a user with role that does not exist: {}\", dto.getRole_id());\r\n            throw new NotFoundException(\"Role\", dto.getRole_id());\r\n        }\r\n        if (userByEmail.isPresent() && !userByEmail.get().getId().equals(dto.getId())) {\r\n            log.warn(\"Attempt to update user with email {} which already exists\", dto.getEmail());\r\n            throw new AlreadyExistsException(\"User with email \" + dto.getEmail() + \" already exists\");\r\n        }\r\n        try {\r\n            UserDomainImpl updatedUser = userDao.save(existingUserOpt.get());\r\n            log.info(\"User with id {} updated successfully\", updatedUser.getId());\r\n            return modelMapper.map(updatedUser, UserDTO.class);\r\n        } catch (Exception e) {\r\n            log.error(\"An unexpected error occurred while updating user with id: {}\", dto.getId(), e);\r\n            throw new RuntimeException(\"Error updating the user\", e);\r\n        }\r\n\r\n\r\n    }\r\n\r\n    public UserDTO getByEmail(String email) {\r\n        log.info(\"Starting user get by email service for user email: {}\", email);\r\n        return userDao.findByEmail(email)\r\n                .map(this::converDomainToDto)\r\n                .orElseThrow(() -> new NotFoundException(\"User\", email));\r\n    }\r\n\r\n    public UserResult getByRoleId(String roleId, Pageable pageable) {\r\n        log.info(\"Starting user get by role id service for user role id: {}\", roleId);\r\n        Page<UserDomainImpl> users = userDao.findAllByRoleId(roleId, pageable);\r\n        List<UserDTO> userDTOs = users.getContent().stream()\r\n                .map(this::converDomainToDto)\r\n                .toList();\r\n        UserResult userResult = new UserResult();\r\n        userResult.setUsers(userDTOs);\r\n        return userResult;\r\n    }\r\n\r\n    private void validateUserData(UserDTO dto) {\r\n        if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {\r\n            throw new InvalidDataException(\"Invalid user data: user email is null or empty\");\r\n        }\r\n        if (dto.getPassword() == null || dto.getPassword().trim().isEmpty()) {\r\n            throw new InvalidDataException(\"Invalid user data: user password is null or empty\");\r\n        }\r\n        if (dto.getRole_id() == null || dto.getRole_id().trim().isEmpty()) {\r\n            throw new InvalidDataException(\"Invalid user data: user role is null or empty\");\r\n        }\r\n\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/user/UserService.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/user/UserService.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/user/UserService.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/service/user/UserService.java	(date 1726867361712)
+@@ -3,24 +3,27 @@
+ import com.fiuni.apiusuarios.dao.role.IRoleDao;
+ import com.fiuni.apiusuarios.dao.user.IUserDao;
+ import com.fiuni.apiusuarios.service.base.BaseServiceImpl;
+-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
+-import com.fiuni.apiusuarios.utils.InvalidDataException;
+-import com.fiuni.apiusuarios.utils.NotFoundException;
++import com.fiuni.marketplacefreelancer.utils.AlreadyExistsException;
++import com.fiuni.marketplacefreelancer.utils.InvalidDataException;
++import com.fiuni.marketplacefreelancer.utils.NotFoundException;
+ import com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;
+ import com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;
+ import com.fiuni.marketplacefreelancer.dto.User.UserDTO;
+ import com.fiuni.marketplacefreelancer.dto.User.UserResult;
+ import lombok.extern.slf4j.Slf4j;
+ import org.modelmapper.ModelMapper;
+-import org.slf4j.Logger;
+-import org.slf4j.LoggerFactory;
+ import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.cache.Cache;
++import org.springframework.cache.CacheManager;
++import org.springframework.cache.annotation.CacheEvict;
++import org.springframework.cache.annotation.CachePut;
+ import org.springframework.cache.annotation.Cacheable;
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.security.crypto.bcrypt.BCrypt;
+ import org.springframework.stereotype.Service;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Optional;
+ 
+@@ -33,26 +36,29 @@
+     private final IUserDao userDao;
+     private final IRoleDao roleDao;
+     private final ModelMapper modelMapper;
++    private final CacheManager cacheManager;
+ 
+     @Autowired
+-    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper) {
++    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper, CacheManager cacheManager) {
+         this.userDao = userDao;
+         this.roleDao = roleDao;
+         this.modelMapper = modelMapper;
++        this.cacheManager = cacheManager;
+     }
+ 
+ 
+     @Override
+-    protected UserDTO converDomainToDto(UserDomainImpl domain) {
++    protected UserDTO convertDomainToDto(UserDomainImpl domain) {
+         return modelMapper.map(domain, UserDTO.class);
+     }
+ 
+     @Override
+-    protected UserDomainImpl converDtoToDomain(UserDTO dto) {
++    protected UserDomainImpl convertDtoToDomain(UserDTO dto) {
+         return modelMapper.map(dto, UserDomainImpl.class);
+     }
+ 
+     @Override
++    @CachePut(value = "usersCache", key = "'api_user_' + #result.id", condition = "#result != null")
+     public UserDTO save(UserDTO dto) {
+ 
+         log.info("Starting user save service for user email: {}", dto.getEmail());
+@@ -72,12 +78,12 @@
+             throw new NotFoundException("Role", dto.getRole_id());
+         }
+         try {
+-            UserDomainImpl user = converDtoToDomain(dto);
++            UserDomainImpl user = convertDtoToDomain(dto);
+             user.setRole(role.get());
+             user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));
+             UserDomainImpl savedUser = userDao.save(user);
+             log.info("User saved successfully with ID: {}", savedUser.getId());
+-            return converDomainToDto(savedUser);
++            return convertDomainToDto(savedUser);
+         } catch (Exception e) {
+             log.error("An unexpected error occurred while saving user: {}", dto.getEmail(), e);
+             throw new RuntimeException("Error saving the user", e);
+@@ -85,27 +91,51 @@
+     }
+ 
+     @Override
+-    @Cacheable(value = "user", key = "'api_user_' + #id")
++    @Cacheable(value = "usersCache", key = "'api_user_' + #id")
+     public UserDTO getById(String id) {
+         log.info("Starting user get by id service for user ID: {}", id);
+         return userDao.findById(id)
+-                .map(this::converDomainToDto)
++                .map(this::convertDomainToDto)
+                 .orElseThrow(() -> new NotFoundException("User", id));
+     }
+ 
+     @Override
+     public UserResult getAll(Pageable pageable) {
+         log.info("Starting user get all service");
+-        Page<UserDomainImpl> users = userDao.findAll(pageable);
++
++        Page<String> userIds = userDao.findAllIds(pageable);
++        List<UserDTO> userDTOs = new ArrayList<>();
++
++        Cache cache = cacheManager.getCache("userCache");
++
++        for (String userId : userIds.getContent()) {
++
++            UserDTO cachedUser = cache != null ? cache.get("api_user_" + userId, UserDTO.class) : null;
++            if (cachedUser != null) {
++                log.info("User {} found in cache", userId);
++                userDTOs.add(cachedUser);
++            } else {
++                log.info("User {} not found in cache", userId);
++                UserDomainImpl user = userDao.findById(userId).orElse(null);
++                if (user != null) {
++                    UserDTO userDTO = convertDomainToDto(user);
++                    if (cache != null) {
++                        cache.put("api_user_" + userId, userDTO);
++                        log.info("User {} saved in cache", userId);
++                    }
++                    userDTOs.add(userDTO);
++                }
++            }
++        }
+ 
+-        List<UserDTO> userDTOs = users.getContent().stream()
+-                .map(this::converDomainToDto)
+-                .toList();
+-        UserResult userResult = new UserResult();
+-        userResult.setUsers(userDTOs);
+-        return userResult;
++        UserResult result = new UserResult();
++        result.setUsers(userDTOs);
++
++        return result;
+     }
+ 
++
++    @CacheEvict(value = "userCache", key = "'api_user_' + #id")
+     public Boolean delete(String id) {
+         log.info("Starting user delete service for user ID: {}", id);
+         Optional<UserDomainImpl> user = userDao.findById(id);
+@@ -119,6 +149,8 @@
+         }
+     }
+ 
++    @CacheEvict(value = "userCache", key = "'api_user_' + #result.id", condition = "#result != null")
++    @CachePut(value = "userCache", key = "'api_user_' + #result.id", condition = "#result != null")
+     public UserDTO update(String id, UserDTO dto) {
+         log.info("Starting update for user with id: {}", dto.getId());
+         validateUserData(dto);
+@@ -150,23 +182,49 @@
+ 
+     }
+ 
++    @Cacheable(value = "userCache", key = "'api_user_' + #email")
+     public UserDTO getByEmail(String email) {
+         log.info("Starting user get by email service for user email: {}", email);
+         return userDao.findByEmail(email)
+-                .map(this::converDomainToDto)
++                .map(this::convertDomainToDto)
+                 .orElseThrow(() -> new NotFoundException("User", email));
+     }
+ 
++
++
+     public UserResult getByRoleId(String roleId, Pageable pageable) {
+         log.info("Starting user get by role id service for user role id: {}", roleId);
+-        Page<UserDomainImpl> users = userDao.findAllByRoleId(roleId, pageable);
+-        List<UserDTO> userDTOs = users.getContent().stream()
+-                .map(this::converDomainToDto)
+-                .toList();
+-        UserResult userResult = new UserResult();
+-        userResult.setUsers(userDTOs);
+-        return userResult;
++
++        Page<String> userIds = userDao.findAllIdsByRoleId(roleId, pageable);
++        List<UserDTO> userDTOs = new ArrayList<>();
++
++        Cache cache = cacheManager.getCache("userCache");
++
++        for (String userId : userIds.getContent()) {
++            UserDTO cachedUser = cache != null ? cache.get("api_user_" + userId, UserDTO.class) : null;
++            if (cachedUser != null) {
++                log.info("User {} found in cache", userId);
++                userDTOs.add(cachedUser);
++            } else {
++                log.info("User {} not found in cache", userId);
++                UserDomainImpl user = userDao.findById(userId).orElse(null);
++                if (user != null) {
++                    UserDTO userDTO = convertDomainToDto(user);
++                    if (cache != null) {
++                        cache.put("api_user_" + userId, userDTO);
++                        log.info("User {} saved in cache", userId);
++                    }
++                    userDTOs.add(userDTO);
++                }
++            }
++        }
++
++        UserResult result = new UserResult();
++        result.setUsers(userDTOs);
++
++        return result;
+     }
++
+ 
+     private void validateUserData(UserDTO dto) {
+         if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/User/UserController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.controller.User;\r\n\r\nimport com.fiuni.apiusuarios.service.user.UserService;\r\nimport com.fiuni.apiusuarios.utils.AlreadyExistsException;\r\nimport com.fiuni.apiusuarios.utils.InvalidDataException;\r\nimport com.fiuni.apiusuarios.utils.NotFoundException;\r\nimport com.fiuni.marketplacefreelancer.dto.User.UserDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.User.UserResult;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.validation.annotation.Validated;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport org.springframework.data.domain.Pageable;\r\n\r\n\r\n@RestController\r\n@RequestMapping(\"/api/v1/user\")\r\npublic class UserController {\r\n\r\n    private final UserService userService;\r\n\r\n    @Autowired\r\n    public UserController(UserService userService) {\r\n        this.userService = userService;\r\n    }\r\n\r\n\r\n    @GetMapping\r\n    public ResponseEntity<UserResult> getAll(Pageable pageable) {\r\n        UserResult userResult = userService.getAll(pageable);\r\n        return new ResponseEntity<>(userResult, HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(\"/{id}\")\r\n    public ResponseEntity<?> getById(@PathVariable String id) {\r\n        UserDTO user = userService.getById(id);\r\n        return new ResponseEntity<>(user, HttpStatus.OK);\r\n    }\r\n\r\n    @PostMapping\r\n    public ResponseEntity<?> save(@Validated @RequestBody UserDTO user) {\r\n        UserDTO savedUser = userService.save(user);\r\n        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);\r\n    }\r\n\r\n\r\n\r\n    @PutMapping(\"/{id}\")\r\n    public ResponseEntity<?> update(@PathVariable String id, @RequestBody UserDTO user) {\r\n        UserDTO updatedUser = userService.update(id, user);\r\n        return new ResponseEntity<>(updatedUser, HttpStatus.OK);\r\n    }\r\n\r\n    @DeleteMapping(\"/{id}\")\r\n    public ResponseEntity<?> delete(@PathVariable String id) {\r\n        Boolean deleted = userService.delete(id);\r\n        if (deleted) {\r\n            return new ResponseEntity<>(HttpStatus.NO_CONTENT);\r\n        } else {\r\n            return new ResponseEntity<>(HttpStatus.NOT_FOUND);\r\n        }\r\n    }\r\n\r\n    @GetMapping(\"/role/{roleId}\")\r\n    public ResponseEntity<UserResult> getByRoleId(@PathVariable String roleId, Pageable pageable) {\r\n          UserResult userResult = userService.getByRoleId(roleId, pageable);\r\n        return new ResponseEntity<>(userResult, HttpStatus.OK);\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/User/UserController.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/User/UserController.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/User/UserController.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/User/UserController.java	(date 1726278462450)
+@@ -1,9 +1,6 @@
+ package com.fiuni.apiusuarios.controller.User;
+ 
+ import com.fiuni.apiusuarios.service.user.UserService;
+-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
+-import com.fiuni.apiusuarios.utils.InvalidDataException;
+-import com.fiuni.apiusuarios.utils.NotFoundException;
+ import com.fiuni.marketplacefreelancer.dto.User.UserDTO;
+ import com.fiuni.marketplacefreelancer.dto.User.UserResult;
+ import org.springframework.beans.factory.annotation.Autowired;
+Index: BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/User/UserLoginDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/User/UserLoginDTO.java b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/User/UserLoginDTO.java
+new file mode 100644
+--- /dev/null	(date 1727400624170)
++++ b/BEANS/src/main/java/com/fiuni/marketplacefreelancer/dto/User/UserLoginDTO.java	(date 1727400624170)
+@@ -0,0 +1,16 @@
++package com.fiuni.marketplacefreelancer.dto.User;
++
++import com.fiuni.marketplacefreelancer.dto.base.BaseDTO;
++import jakarta.xml.bind.annotation.XmlAccessType;
++import jakarta.xml.bind.annotation.XmlAccessorType;
++import jakarta.xml.bind.annotation.XmlRootElement;
++import lombok.*;
++
++@EqualsAndHashCode(callSuper = false)
++@Data
++public class UserLoginDTO extends BaseDTO {
++
++    private String email;
++
++    private String password;
++}
+Index: ApiUsuarios/src/main/resources/templates/error/error.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/resources/templates/error/error.html b/ApiUsuarios/src/main/resources/templates/error/error.html
+new file mode 100644
+--- /dev/null	(date 1726279844257)
++++ b/ApiUsuarios/src/main/resources/templates/error/error.html	(date 1726279844257)
+@@ -0,0 +1,32 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <meta charset="UTF-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <title>Error</title>
++    <style>
++        body {
++            font-family: Arial, sans-serif;
++            text-align: center;
++            padding: 50px;
++        }
++        h1 {
++            color: #ff6f61;
++            font-size: 50px;
++        }
++        p {
++            font-size: 20px;
++            color: #333;
++        }
++        a {
++            color: #ff6f61;
++            text-decoration: none;
++        }
++    </style>
++</head>
++<body>
++<h1>Oops! Algo salió mal.</h1>
++<p>Ocurrió un error inesperado. Por favor, vuelve a intentarlo más tarde.</p>
++<p><a href="http://localhost:8080/swagger-ui/index.html">Volver al inicio</a></p>
++</body>
++</html>
+Index: ApiUsuarios/src/main/resources/templates/error/404.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/resources/templates/error/404.html b/ApiUsuarios/src/main/resources/templates/error/404.html
+new file mode 100644
+--- /dev/null	(date 1726279729305)
++++ b/ApiUsuarios/src/main/resources/templates/error/404.html	(date 1726279729305)
+@@ -0,0 +1,32 @@
++<!DOCTYPE html>
++<html lang="en">
++<head>
++    <meta charset="UTF-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <title>Página no encontrada</title>
++    <style>
++        body {
++            font-family: Arial, sans-serif;
++            text-align: center;
++            padding: 50px;
++        }
++        h1 {
++            color: #ff6f61;
++            font-size: 50px;
++        }
++        p {
++            font-size: 20px;
++            color: #333;
++        }
++        a {
++            color: #ff6f61;
++            text-decoration: none;
++        }
++    </style>
++</head>
++<body>
++<h1>Error 404</h1>
++<p>Lo sentimos, la página que estás buscando no existe.</p>
++<p><a href="http://localhost:8080/swagger-ui">Volver al inicio</a></p>
++</body>
++</html>
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/Role/RoleController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.controller.Role;\r\n\r\nimport com.fiuni.apiusuarios.service.Role.RoleService;\r\nimport com.fiuni.apiusuarios.utils.AlreadyExistsException;\r\nimport com.fiuni.marketplacefreelancer.dto.Role.RoleDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.Role.RoleResult;\r\nimport lombok.extern.slf4j.Slf4j;\r\nimport org.slf4j.LoggerFactory;\r\nimport org.slf4j.Logger;\r\n\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.data.web.PageableDefault;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.validation.annotation.Validated;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport org.springframework.data.domain.Pageable;\r\n\r\n\r\n@RestController\r\n@RequestMapping(\"/api/v1/role\")\r\n@Slf4j\r\npublic class RoleController{\r\n\r\n    private final RoleService roleService;\r\n\r\n    @Autowired\r\n    public RoleController(RoleService roleService) {\r\n        this.roleService = roleService;\r\n    }\r\n\r\n\r\n    @GetMapping\r\n    public ResponseEntity<RoleResult> getAll(Pageable pageable) {\r\n        return new ResponseEntity<>(roleService.getAll(pageable), HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(\"/{id}\")\r\n    public ResponseEntity<RoleDTO> getById(@PathVariable String id) {\r\n        return new ResponseEntity<>(roleService.getById(id), HttpStatus.OK);\r\n    }\r\n\r\n    @PostMapping\r\n    public ResponseEntity<?> save(@Validated @RequestBody RoleDTO role) {\r\n        return new ResponseEntity<>(roleService.save(role), HttpStatus.CREATED);\r\n    }\r\n\r\n    @PutMapping(\"/{id}\")\r\n    public ResponseEntity<?> update(@PathVariable String id, @RequestBody RoleDTO role) {\r\n        return new ResponseEntity<>(roleService.update(id, role), HttpStatus.OK);\r\n    }\r\n\r\n    @DeleteMapping(\"/{id}\")\r\n    public ResponseEntity<?> delete(@PathVariable String id) {\r\n        return new ResponseEntity<>(roleService.delete(id), HttpStatus.NO_CONTENT);\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/Role/RoleController.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/Role/RoleController.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/Role/RoleController.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/Role/RoleController.java	(date 1726278462469)
+@@ -1,15 +1,11 @@
+ package com.fiuni.apiusuarios.controller.Role;
+ 
+ import com.fiuni.apiusuarios.service.Role.RoleService;
+-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
+ import com.fiuni.marketplacefreelancer.dto.Role.RoleDTO;
+ import com.fiuni.marketplacefreelancer.dto.Role.RoleResult;
+ import lombok.extern.slf4j.Slf4j;
+-import org.slf4j.LoggerFactory;
+-import org.slf4j.Logger;
+ 
+ import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.data.web.PageableDefault;
+ import org.springframework.http.HttpStatus;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.validation.annotation.Validated;
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/user/IUserDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.dao.user;\r\n\r\nimport com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.jpa.repository.JpaRepository;\r\nimport org.springframework.stereotype.Repository;\r\n\r\nimport java.util.Optional;\r\n\r\n@Repository\r\npublic interface IUserDao extends JpaRepository<UserDomainImpl, String> {\r\n\r\n    Optional<UserDomainImpl> findByEmail(String email);\r\n\r\n    Page<UserDomainImpl> findAllByRoleId(String roleId, Pageable pageable);\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/user/IUserDao.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/user/IUserDao.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/user/IUserDao.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/user/IUserDao.java	(date 1726858181265)
+@@ -4,6 +4,7 @@
+ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Query;
+ import org.springframework.stereotype.Repository;
+ 
+ import java.util.Optional;
+@@ -13,5 +14,9 @@
+ 
+     Optional<UserDomainImpl> findByEmail(String email);
+ 
+-    Page<UserDomainImpl> findAllByRoleId(String roleId, Pageable pageable);
++    @Query("SELECT DISTINCT u.id FROM UserDomainImpl u WHERE u.role.id = ?1")
++    Page<String> findAllIdsByRoleId(String roleId, Pageable pageable);
++
++    @Query("SELECT DISTINCT u.id FROM UserDomainImpl u")
++    Page<String> findAllIds(Pageable pageable);
+ }
+\ No newline at end of file
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/profile/ProfileController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.controller.profile;\r\n\r\nimport com.fiuni.apiusuarios.service.profile.ProfileService;\r\nimport com.fiuni.marketplacefreelancer.dto.Profile.ProfileDTO;\r\nimport com.fiuni.marketplacefreelancer.dto.Profile.ProfileResult;\r\nimport com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;\r\nimport org.springframework.beans.factory.annotation.Autowired;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\n\r\n@RestController(\"userprofileController\")\r\n@RequestMapping(\"/api/v1/profile\")\r\npublic class ProfileController {\r\n\r\n    private final ProfileService profileService;\r\n\r\n    @Autowired\r\n    public ProfileController(ProfileService profileService) {\r\n        this.profileService = profileService;\r\n    }\r\n\r\n    @GetMapping\r\n    public ResponseEntity<ProfileResult> getAll(Pageable pageable) {\r\n       ProfileResult profileResult = profileService.getAll(pageable);\r\n       return new ResponseEntity<>(profileResult, HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(\"/{id}\")\r\n    public ResponseEntity<?> getById(@PathVariable String id) {\r\n        return new ResponseEntity<>(profileService.getById(id), HttpStatus.OK);\r\n    }\r\n\r\n    @GetMapping(\"tag\")\r\n    public ResponseEntity<?> getByTag(@RequestParam String tag, Pageable pageable) {\r\n        return new ResponseEntity<>(profileService.getByTag(tag, pageable), HttpStatus.OK);\r\n    }\r\n\r\n    @PostMapping\r\n    public ResponseEntity<?> save(@RequestBody ProfileDTO profile) {\r\n        return new ResponseEntity<>(profileService.save(profile), HttpStatus.CREATED);\r\n    }\r\n\r\n    @PutMapping(\"/{id}\")\r\n    public ResponseEntity<?> update(@PathVariable String id, @RequestBody ProfileDTO profile) {\r\n        return new ResponseEntity<>(profileService.update(id, profile), HttpStatus.OK);\r\n    }\r\n\r\n    @DeleteMapping(\"/{id}\")\r\n    public ResponseEntity<?> delete(@PathVariable String id) {\r\n        return new ResponseEntity<>(profileService.delete(id), HttpStatus.NO_CONTENT);\r\n    }\r\n\r\n    @PutMapping(\"/{id}/rate\")\r\n    public ResponseEntity<?> addRate(@PathVariable String id, @RequestBody RateDTO rate) {\r\n        return new ResponseEntity<>(profileService.addRate(id, rate), HttpStatus.OK);\r\n    }\r\n\r\n    @DeleteMapping(\"/{id}/rate/{rateId}\")\r\n    public ResponseEntity<?> removeRate(@PathVariable String id, @PathVariable String rateId) {\r\n        return new ResponseEntity<>(profileService.removeRate(id, rateId), HttpStatus.OK);\r\n    }\r\n\r\n    @PutMapping(\"/{id}/skill\")\r\n    public ResponseEntity<?> addSkillToProfile(@PathVariable String id, @RequestBody String skillId) {\r\n        return new ResponseEntity<>(profileService.addSkillToProfile(id, skillId), HttpStatus.OK);\r\n    }\r\n\r\n    @DeleteMapping(\"/{id}/skill/{skillId}\")\r\n    public ResponseEntity<?> removeSkillFromProfile(@PathVariable String id, @PathVariable String skillId) {\r\n        return new ResponseEntity<>(profileService.removeSkillFromProfile(id, skillId), HttpStatus.OK);\r\n    }\r\n\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/profile/ProfileController.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/profile/ProfileController.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/profile/ProfileController.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/controller/profile/ProfileController.java	(date 1726859791266)
+@@ -4,6 +4,9 @@
+ import com.fiuni.marketplacefreelancer.dto.Profile.ProfileDTO;
+ import com.fiuni.marketplacefreelancer.dto.Profile.ProfileResult;
+ import com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;
++import com.fiuni.marketplacefreelancer.dto.Rate.RateResult;
++import com.fiuni.marketplacefreelancer.dto.Skill.SkillResult;
++import lombok.extern.slf4j.Slf4j;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.http.HttpStatus;
+@@ -13,6 +16,7 @@
+ 
+ @RestController("userprofileController")
+ @RequestMapping("/api/v1/profile")
++@Slf4j
+ public class ProfileController {
+ 
+     private final ProfileService profileService;
+@@ -23,7 +27,10 @@
+     }
+ 
+     @GetMapping
+-    public ResponseEntity<ProfileResult> getAll(Pageable pageable) {
++    public ResponseEntity<ProfileResult> getAll(Pageable pageable, @RequestParam(required = false) String skillId) {
++        if(skillId != null && !skillId.trim().isEmpty()) {
++            return new ResponseEntity<>(profileService.getProfilesBySkill(skillId, pageable), HttpStatus.OK);
++        }
+        ProfileResult profileResult = profileService.getAll(pageable);
+        return new ResponseEntity<>(profileResult, HttpStatus.OK);
+     }
+@@ -33,11 +40,6 @@
+         return new ResponseEntity<>(profileService.getById(id), HttpStatus.OK);
+     }
+ 
+-    @GetMapping("tag")
+-    public ResponseEntity<?> getByTag(@RequestParam String tag, Pageable pageable) {
+-        return new ResponseEntity<>(profileService.getByTag(tag, pageable), HttpStatus.OK);
+-    }
+-
+     @PostMapping
+     public ResponseEntity<?> save(@RequestBody ProfileDTO profile) {
+         return new ResponseEntity<>(profileService.save(profile), HttpStatus.CREATED);
+@@ -53,8 +55,14 @@
+         return new ResponseEntity<>(profileService.delete(id), HttpStatus.NO_CONTENT);
+     }
+ 
+-    @PutMapping("/{id}/rate")
++    @GetMapping("/{id}/rate")
++    public ResponseEntity<RateResult> getRates(@PathVariable String id, Pageable pageable) {
++        return new ResponseEntity<>(profileService.getRates(id, pageable), HttpStatus.OK);
++    }
++
++    @PostMapping("/{id}/rate")
+     public ResponseEntity<?> addRate(@PathVariable String id, @RequestBody RateDTO rate) {
++        log.info(rate.toString());
+         return new ResponseEntity<>(profileService.addRate(id, rate), HttpStatus.OK);
+     }
+ 
+@@ -63,7 +71,7 @@
+         return new ResponseEntity<>(profileService.removeRate(id, rateId), HttpStatus.OK);
+     }
+ 
+-    @PutMapping("/{id}/skill")
++    @PostMapping("/{id}/skill")
+     public ResponseEntity<?> addSkillToProfile(@PathVariable String id, @RequestBody String skillId) {
+         return new ResponseEntity<>(profileService.addSkillToProfile(id, skillId), HttpStatus.OK);
+     }
+@@ -73,6 +81,11 @@
+         return new ResponseEntity<>(profileService.removeSkillFromProfile(id, skillId), HttpStatus.OK);
+     }
+ 
++    @GetMapping("/{id}/skill")
++    public ResponseEntity<SkillResult> getSkills(@PathVariable String id, Pageable pageable) {
++        return new ResponseEntity<>(profileService.getSkills(id, pageable), HttpStatus.OK);
++    }
++
+ 
+ 
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/ApiUsuariosApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios;\r\n\r\nimport org.modelmapper.ModelMapper;\r\nimport org.springframework.boot.SpringApplication;\r\nimport org.springframework.boot.autoconfigure.SpringBootApplication;\r\nimport org.springframework.boot.autoconfigure.domain.EntityScan;\r\nimport org.springframework.cache.annotation.EnableCaching;\r\nimport org.springframework.context.annotation.Bean;\r\nimport org.springframework.data.jpa.repository.config.EnableJpaAuditing;\r\n\r\n@SpringBootApplication\r\n@EntityScan(\"com.fiuni.marketplacefreelancer.domain\")\r\n@EnableJpaAuditing\r\n@EnableCaching\r\npublic class ApiUsuariosApplication {\r\n\r\n    public static void main(String[] args) {\r\n                SpringApplication.run(ApiUsuariosApplication.class, args);\r\n    }\r\n\r\n    @Bean\r\n    public ModelMapper modelMapper() {\r\n        return new ModelMapper();\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/ApiUsuariosApplication.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/ApiUsuariosApplication.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/ApiUsuariosApplication.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/ApiUsuariosApplication.java	(date 1727400170837)
+@@ -1,6 +1,8 @@
+ package com.fiuni.apiusuarios;
+ 
+ import org.modelmapper.ModelMapper;
++import org.modelmapper.convention.MatchingStrategies;
++import org.modelmapper.spi.MappingContext;
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+ import org.springframework.boot.autoconfigure.domain.EntityScan;
+@@ -8,6 +10,9 @@
+ import org.springframework.context.annotation.Bean;
+ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+ 
++import java.time.LocalDateTime;
++import java.time.format.DateTimeFormatter;
++
+ @SpringBootApplication
+ @EntityScan("com.fiuni.marketplacefreelancer.domain")
+ @EnableJpaAuditing
+@@ -18,9 +23,8 @@
+                 SpringApplication.run(ApiUsuariosApplication.class, args);
+     }
+ 
+-    @Bean
+-    public ModelMapper modelMapper() {
+-        return new ModelMapper();
+-    }
+-
++        @Bean
++        public ModelMapper modelMapper() {
++            return new ModelMapper();
++        }
+ }
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/GlobalExceptionHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/GlobalExceptionHandler.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/GlobalExceptionHandler.java
+new file mode 100644
+--- /dev/null	(date 1726861031354)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/GlobalExceptionHandler.java	(date 1726861031354)
+@@ -0,0 +1,131 @@
++package com.fiuni.apiusuarios.config;
++
++import com.fasterxml.jackson.core.JsonParseException;
++import com.fiuni.marketplacefreelancer.utils.AlreadyExistsException;
++import com.fiuni.marketplacefreelancer.utils.InvalidDataException;
++import com.fiuni.marketplacefreelancer.utils.NotFoundException;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.dao.InvalidDataAccessApiUsageException;
++import org.springframework.data.mapping.PropertyReferenceException;
++import org.springframework.http.HttpStatus;
++import org.springframework.http.ResponseEntity;
++import org.springframework.http.converter.HttpMessageNotReadableException;
++import org.springframework.web.HttpRequestMethodNotSupportedException;
++import org.springframework.web.bind.MethodArgumentNotValidException;
++import org.springframework.web.bind.annotation.ExceptionHandler;
++import org.springframework.web.bind.annotation.RestControllerAdvice;
++import org.springframework.web.servlet.NoHandlerFoundException;
++
++import java.util.HashMap;
++import java.util.Map;
++
++@RestControllerAdvice
++@Slf4j
++public class GlobalExceptionHandler {
++
++
++    @ExceptionHandler(MethodArgumentNotValidException.class)
++    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
++        Map<String, Object> response = new HashMap<>();
++        Map<String, String> errors = new HashMap<>();
++        ex.getBindingResult().getFieldErrors().forEach(error ->
++                errors.put(error.getField(), error.getDefaultMessage()));
++        response.put("status", HttpStatus.BAD_REQUEST.value());
++        response.put("errors", errors);
++
++        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
++    }
++
++    @ExceptionHandler(AlreadyExistsException.class)
++    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(AlreadyExistsException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.CONFLICT.value());
++        response.put("error", "Conflict");
++        response.put("message", ex.getMessage());
++        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
++    }
++
++
++    @ExceptionHandler(NotFoundException.class)
++    public ResponseEntity<Map<String, Object>> handleUserNotFoundException(NotFoundException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.NOT_FOUND.value());
++        response.put("error", "Not Found");
++        response.put("message", ex.getMessage());
++        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
++    }
++
++    @ExceptionHandler(NoHandlerFoundException.class)
++    public ResponseEntity<Map<String, Object>> handleNoHandlerFoundException(NoHandlerFoundException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.NOT_FOUND.value());
++        response.put("error", "Not Found");
++        response.put("message", "The path you are looking for does not exist");
++        response.put("path", ex.getRequestURL());
++
++        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
++    }
++
++    @ExceptionHandler(JsonParseException.class)
++    public ResponseEntity<String> handleJsonParseException(JsonParseException ex) {
++        return new ResponseEntity<>("Invalid JSON format", HttpStatus.BAD_REQUEST);
++    }
++
++
++    @ExceptionHandler(HttpMessageNotReadableException.class)
++    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
++        Map<String, String> response = new HashMap<>();
++        response.put("status", String.valueOf(HttpStatus.BAD_REQUEST.value()));
++        response.put("error", "Invalid JSON format");
++        response.put("message", "The JSON request is not properly formatted. Please check the structure of the JSON.");
++        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
++    }
++
++
++
++    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
++    public ResponseEntity<Map<String, String>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
++        Map<String, String> response = new HashMap<>();
++        response.put("status", String.valueOf(HttpStatus.METHOD_NOT_ALLOWED.value()));
++        response.put("error", "Method Not Allowed");
++        response.put("message", "The HTTP method is not allowed for this request. Please check the HTTP method used.");
++        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
++    }
++
++    @ExceptionHandler(Exception.class)
++    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
++        log.error("Unexpected error occurred: ", ex);
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
++        response.put("error", "Internal Server Error");
++        response.put("message", "An unexpected error occurred. Please try again later.");
++
++        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
++    }
++
++    @ExceptionHandler(InvalidDataException.class)
++    public ResponseEntity<Map<String, Object>> handleInvalidDataException(InvalidDataException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.BAD_REQUEST.value());
++        response.put("error", "Bad Request");
++        response.put("message", ex.getMessage());
++        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
++    }
++
++    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
++    public ResponseEntity<Map<String, Object>> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex) {
++        Map<String, Object> response = new HashMap<>();
++        response.put("status", HttpStatus.BAD_REQUEST.value());
++        response.put("error", "Bad Request");
++        response.put("message", "Sort parameter is not valid");
++        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
++    }
++
++
++    @ExceptionHandler(PropertyReferenceException.class)
++    public ResponseEntity<String> handlePropertyReferenceException(PropertyReferenceException ex) {
++        return ResponseEntity
++                .status(HttpStatus.BAD_REQUEST)
++                .body("Campo de ordenación no válido: " + ex.getPropertyName());
++    }
++}
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/RedisCacheConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/RedisCacheConfig.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/RedisCacheConfig.java
+new file mode 100644
+--- /dev/null	(date 1726868188747)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/config/RedisCacheConfig.java	(date 1726868188747)
+@@ -0,0 +1,49 @@
++package com.fiuni.apiusuarios.config;
++
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
++import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.cache.CacheManager;
++import org.springframework.cache.annotation.EnableCaching;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.data.redis.cache.RedisCacheConfiguration;
++import org.springframework.data.redis.cache.RedisCacheManager;
++import org.springframework.data.redis.connection.RedisConnectionFactory;
++import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
++import org.springframework.data.redis.serializer.RedisSerializationContext;
++
++import java.time.Duration;
++import java.util.HashMap;
++import java.util.Map;
++
++@Configuration
++@EnableCaching
++public class RedisCacheConfig {
++
++    @Value("${TTl_usersCacheInSeconds:3600}")
++    private int TTl_usersCache;
++
++    @Value("${TTl_profilesCacheInMinutes:60}")
++    private int TTl_profilesCache;
++
++    @Bean
++    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
++
++
++        RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
++                .entryTtl(Duration.ZERO);
++
++        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
++        cacheConfigurations.put("profilesCache", RedisCacheConfiguration.defaultCacheConfig()
++                .entryTtl(Duration.ofMinutes(TTl_profilesCache)));
++        cacheConfigurations.put("usersCache", RedisCacheConfiguration.defaultCacheConfig()
++                .entryTtl(Duration.ofSeconds(TTl_usersCache)));
++
++        return RedisCacheManager.builder(redisConnectionFactory)
++                .cacheDefaults(defaultCacheConfig)
++                .withInitialCacheConfigurations(cacheConfigurations)
++                .build();
++    }
++}
+Index: ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/profile/IProfileDao.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.fiuni.apiusuarios.dao.profile;\r\n\r\nimport com.fiuni.marketplacefreelancer.domain.profile.ProfileDomainImpl;\r\nimport org.springframework.data.domain.Page;\r\nimport org.springframework.data.domain.Pageable;\r\nimport org.springframework.data.jpa.repository.JpaRepository;\r\nimport org.springframework.data.jpa.repository.Query;\r\n\r\nimport java.util.List;\r\nimport java.util.Optional;\r\n\r\npublic interface IProfileDao extends JpaRepository<ProfileDomainImpl, String> {\r\n    Optional<ProfileDomainImpl> findByUserId(String userId);\r\n\r\n    Page<ProfileDomainImpl> findBySkills_NameContaining(String skillName, Pageable pageable);\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/profile/IProfileDao.java b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/profile/IProfileDao.java
+--- a/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/profile/IProfileDao.java	(revision 8086e858a7840b6b2fb4b550604981ab93e1aad3)
++++ b/ApiUsuarios/src/main/java/com/fiuni/apiusuarios/dao/profile/IProfileDao.java	(date 1726859784636)
+@@ -5,12 +5,17 @@
+ import org.springframework.data.domain.Pageable;
+ import org.springframework.data.jpa.repository.JpaRepository;
+ import org.springframework.data.jpa.repository.Query;
++import org.springframework.stereotype.Repository;
+ 
+ import java.util.List;
+ import java.util.Optional;
+ 
++@Repository
+ public interface IProfileDao extends JpaRepository<ProfileDomainImpl, String> {
+     Optional<ProfileDomainImpl> findByUserId(String userId);
+ 
+-    Page<ProfileDomainImpl> findBySkills_NameContaining(String skillName, Pageable pageable);
++    Page<ProfileDomainImpl> findAllBySkills_Id(String skillId, Pageable pageable);
++
++    @Query("SELECT DISTINCT p.id FROM ProfileDomainImpl p")
++    Page<String> findAllIds(Pageable pageable);
+ }
