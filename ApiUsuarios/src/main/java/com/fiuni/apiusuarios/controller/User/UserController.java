@@ -19,8 +19,12 @@ import org.springframework.data.domain.Pageable;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @GetMapping
@@ -57,6 +61,12 @@ public class UserController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/role/{roleId}")
+    public ResponseEntity<UserResult> getByRoleId(@PathVariable String roleId, Pageable pageable) {
+          UserResult userResult = userService.getByRoleId(roleId, pageable);
+        return new ResponseEntity<>(userResult, HttpStatus.OK);
     }
 
 }

@@ -22,12 +22,14 @@ import java.util.Optional;
 @Slf4j
 public class RoleService extends BaseServiceImpl<RoleDTO, RoleDomainImpl, RoleResult> {
 
+    private final IRoleDao roleDao;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private IRoleDao roleDao;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    public RoleService(IRoleDao roleDao, ModelMapper modelMapper) {
+        this.roleDao = roleDao;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     protected RoleDTO converDomainToDto(RoleDomainImpl domain) {

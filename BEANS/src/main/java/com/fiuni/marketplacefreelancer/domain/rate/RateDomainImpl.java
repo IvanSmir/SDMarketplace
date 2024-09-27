@@ -2,8 +2,10 @@ package com.fiuni.marketplacefreelancer.domain.rate;
 
 import com.fiuni.marketplacefreelancer.domain.base.IBaseDomain;
 import com.fiuni.marketplacefreelancer.domain.enums.RateType;
+import com.fiuni.marketplacefreelancer.domain.profile.ProfileDomainImpl;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serial;
 
@@ -17,15 +19,22 @@ public class RateDomainImpl implements IBaseDomain {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, unique = true)
-    private int id;
+    private String id;
 
     @Column(name = "amount", nullable = false)
-    private float amount;
+    private double amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rate_type", nullable = false)
     private RateType rateType;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    @ToString.Exclude
+    private ProfileDomainImpl profile;
+
+
 
 }

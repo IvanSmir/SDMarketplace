@@ -22,14 +22,14 @@ import java.util.Optional;
 @Slf4j
 public class SkillService extends BaseServiceImpl<SkillDTO, SkillDomainImpl, SkillResult> {
 
-
-
-    @Autowired
-    private ISkillDao skillDao;
+    private final ISkillDao skillDao;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
-
+    public SkillService(ISkillDao skillDao, ModelMapper modelMapper) {
+        this.skillDao = skillDao;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     protected SkillDTO converDomainToDto(SkillDomainImpl domain) {
@@ -82,6 +82,45 @@ public class SkillService extends BaseServiceImpl<SkillDTO, SkillDomainImpl, Ski
         SkillResult result = new SkillResult();
         result.setSkills(skillDTOs);
         return result;
+    }
+
+    public Boolean delete(String id) {
+        log.info("Starting skill delete service for skill ID: {}", id);
+        Optional<SkillDomainImpl> skill = skillDao.findById(id);
+        if (skill.isPresent()) {
+            skillDao.delete(skill.get());
+            log.info("Skill deleted successfully with ID: {}", id);
+            return true;
+        } else {
+            log.warn("Attempt to delete a skill that does not exist: {}", id);
+            return false;
+        }
+    }
+
+    public SkillDTO update(String id, SkillDTO dto) {
+        log.info("Starting update for skill with id: {}", id);
+
+        Optional<SkillDomainImpl> existingSkillOpt = skillDao.findById(id);
+        if (existingSkillOpt.isEmpty()) {
+            log.warn("Skill with id {} not found", id);
+            throw new InvalidDataException("Skill with id " + id + " not found");
+        }
+
+        SkillDomainImpl existingSkill = existingSkillOpt.get();
+        validateSkillData(dto);
+
+        try {
+            existingSkill.setName(dto.getName());
+            SkillDomainImpl updatedSkill = skillDao.save(existingSkill);
+            log.info("Skill with id {} updated successfully", updatedSkill.getId());
+
+            return modelMapper.map(updatedSkill, SkillDTO.class);
+        } catch (Exception e) {
+            log.error("An unexpected error occurred while updating skill with id: {}", id, e);
+            throw new RuntimeException("Error updating the skill", e);
+        }
+
+
     }
 
     private void validateSkillData(SkillDTO dto) {

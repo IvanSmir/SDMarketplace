@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -78,6 +79,16 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Map<String, String>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", String.valueOf(HttpStatus.METHOD_NOT_ALLOWED.value()));
+        response.put("error", "Method Not Allowed");
+        response.put("message", "The HTTP method is not allowed for this request. Please check the HTTP method used.");
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
         log.error("Unexpected error occurred: ", ex);
@@ -87,6 +98,15 @@ public class GlobalExceptionHandler {
         response.put("message", "An unexpected error occurred. Please try again later.");
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidDataException(InvalidDataException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("error", "Bad Request");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
 }

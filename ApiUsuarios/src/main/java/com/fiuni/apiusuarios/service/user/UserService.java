@@ -30,14 +30,16 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
 
 
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final IUserDao userDao;
+    private final IRoleDao roleDao;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private IUserDao userDao;
-
-    @Autowired
-    private IRoleDao roleDao;
+    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper) {
+        this.userDao = userDao;
+        this.roleDao = roleDao;
+        this.modelMapper = modelMapper;
+    }
 
 
     @Override
@@ -148,12 +150,22 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
 
     }
 
-
     public UserDTO getByEmail(String email) {
         log.info("Starting user get by email service for user email: {}", email);
         return userDao.findByEmail(email)
                 .map(this::converDomainToDto)
                 .orElseThrow(() -> new NotFoundException("User", email));
+    }
+
+    public UserResult getByRoleId(String roleId, Pageable pageable) {
+        log.info("Starting user get by role id service for user role id: {}", roleId);
+        Page<UserDomainImpl> users = userDao.findAllByRoleId(roleId, pageable);
+        List<UserDTO> userDTOs = users.getContent().stream()
+                .map(this::converDomainToDto)
+                .toList();
+        UserResult userResult = new UserResult();
+        userResult.setUsers(userDTOs);
+        return userResult;
     }
 
     private void validateUserData(UserDTO dto) {
