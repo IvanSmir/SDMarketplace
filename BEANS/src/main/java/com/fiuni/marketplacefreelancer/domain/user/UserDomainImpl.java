@@ -7,15 +7,20 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class UserDomainImpl implements IBaseDomain {
+public class UserDomainImpl implements IBaseDomain, UserDetails {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -48,4 +53,15 @@ public class UserDomainImpl implements IBaseDomain {
     @LastModifiedDate
     @Column(name = "updatedAt", nullable = false)
     private LocalDateTime updatedAt;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + this.role.getName().toUpperCase());
+        return List.of(authority);
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }

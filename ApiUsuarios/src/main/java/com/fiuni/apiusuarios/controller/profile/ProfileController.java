@@ -4,6 +4,9 @@ import com.fiuni.apiusuarios.service.profile.ProfileService;
 import com.fiuni.marketplacefreelancer.dto.Profile.ProfileDTO;
 import com.fiuni.marketplacefreelancer.dto.Profile.ProfileResult;
 import com.fiuni.marketplacefreelancer.dto.Rate.RateDTO;
+import com.fiuni.marketplacefreelancer.dto.Rate.RateResult;
+import com.fiuni.marketplacefreelancer.dto.Skill.SkillResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController("userprofileController")
 @RequestMapping("/api/v1/profile")
+@Slf4j
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -23,7 +27,10 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<ProfileResult> getAll(Pageable pageable) {
+    public ResponseEntity<ProfileResult> getAll(Pageable pageable, @RequestParam(required = false) String skillId) {
+        if(skillId != null && !skillId.trim().isEmpty()) {
+            return new ResponseEntity<>(profileService.getProfilesBySkill(skillId, pageable), HttpStatus.OK);
+        }
        ProfileResult profileResult = profileService.getAll(pageable);
        return new ResponseEntity<>(profileResult, HttpStatus.OK);
     }
@@ -31,11 +38,6 @@ public class ProfileController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable String id) {
         return new ResponseEntity<>(profileService.getById(id), HttpStatus.OK);
-    }
-
-    @GetMapping("tag")
-    public ResponseEntity<?> getByTag(@RequestParam String tag, Pageable pageable) {
-        return new ResponseEntity<>(profileService.getByTag(tag, pageable), HttpStatus.OK);
     }
 
     @PostMapping
@@ -53,8 +55,14 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.delete(id), HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/rate")
+    @GetMapping("/{id}/rate")
+    public ResponseEntity<RateResult> getRates(@PathVariable String id, Pageable pageable) {
+        return new ResponseEntity<>(profileService.getRates(id, pageable), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/rate")
     public ResponseEntity<?> addRate(@PathVariable String id, @RequestBody RateDTO rate) {
+        log.info(rate.toString());
         return new ResponseEntity<>(profileService.addRate(id, rate), HttpStatus.OK);
     }
 
@@ -63,7 +71,7 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.removeRate(id, rateId), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/skill")
+    @PostMapping("/{id}/skill")
     public ResponseEntity<?> addSkillToProfile(@PathVariable String id, @RequestBody String skillId) {
         return new ResponseEntity<>(profileService.addSkillToProfile(id, skillId), HttpStatus.OK);
     }
@@ -71,6 +79,11 @@ public class ProfileController {
     @DeleteMapping("/{id}/skill/{skillId}")
     public ResponseEntity<?> removeSkillFromProfile(@PathVariable String id, @PathVariable String skillId) {
         return new ResponseEntity<>(profileService.removeSkillFromProfile(id, skillId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/skill")
+    public ResponseEntity<SkillResult> getSkills(@PathVariable String id, Pageable pageable) {
+        return new ResponseEntity<>(profileService.getSkills(id, pageable), HttpStatus.OK);
     }
 
 

@@ -3,24 +3,27 @@ package com.fiuni.apiusuarios.service.user;
 import com.fiuni.apiusuarios.dao.role.IRoleDao;
 import com.fiuni.apiusuarios.dao.user.IUserDao;
 import com.fiuni.apiusuarios.service.base.BaseServiceImpl;
-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
-import com.fiuni.apiusuarios.utils.InvalidDataException;
-import com.fiuni.apiusuarios.utils.NotFoundException;
+import com.fiuni.marketplacefreelancer.utils.AlreadyExistsException;
+import com.fiuni.marketplacefreelancer.utils.InvalidDataException;
+import com.fiuni.marketplacefreelancer.utils.NotFoundException;
 import com.fiuni.marketplacefreelancer.domain.role.RoleDomainImpl;
 import com.fiuni.marketplacefreelancer.domain.user.UserDomainImpl;
 import com.fiuni.marketplacefreelancer.dto.User.UserDTO;
 import com.fiuni.marketplacefreelancer.dto.User.UserResult;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,26 +36,29 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
     private final IUserDao userDao;
     private final IRoleDao roleDao;
     private final ModelMapper modelMapper;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper) {
+    public UserService(IUserDao userDao, IRoleDao roleDao, ModelMapper modelMapper, CacheManager cacheManager) {
         this.userDao = userDao;
         this.roleDao = roleDao;
         this.modelMapper = modelMapper;
+        this.cacheManager = cacheManager;
     }
 
 
     @Override
-    protected UserDTO converDomainToDto(UserDomainImpl domain) {
+    protected UserDTO convertDomainToDto(UserDomainImpl domain) {
         return modelMapper.map(domain, UserDTO.class);
     }
 
     @Override
-    protected UserDomainImpl converDtoToDomain(UserDTO dto) {
+    protected UserDomainImpl convertDtoToDomain(UserDTO dto) {
         return modelMapper.map(dto, UserDomainImpl.class);
     }
 
     @Override
+    @CachePut(value = "usersCache", key = "'api_user_' + #result.id", condition = "#result != null")
     public UserDTO save(UserDTO dto) {
 
         log.info("Starting user save service for user email: {}", dto.getEmail());
@@ -72,12 +78,12 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
             throw new NotFoundException("Role", dto.getRole_id());
         }
         try {
-            UserDomainImpl user = converDtoToDomain(dto);
+            UserDomainImpl user = convertDtoToDomain(dto);
             user.setRole(role.get());
             user.setPassword(BCrypt.hashpw(dto.getPassword(), BCrypt.gensalt()));
             UserDomainImpl savedUser = userDao.save(user);
             log.info("User saved successfully with ID: {}", savedUser.getId());
-            return converDomainToDto(savedUser);
+            return convertDomainToDto(savedUser);
         } catch (Exception e) {
             log.error("An unexpected error occurred while saving user: {}", dto.getEmail(), e);
             throw new RuntimeException("Error saving the user", e);
@@ -85,27 +91,51 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
     }
 
     @Override
-    @Cacheable(value = "user", key = "'api_user_' + #id")
+    @Cacheable(value = "usersCache", key = "'api_user_' + #id")
     public UserDTO getById(String id) {
         log.info("Starting user get by id service for user ID: {}", id);
         return userDao.findById(id)
-                .map(this::converDomainToDto)
+                .map(this::convertDomainToDto)
                 .orElseThrow(() -> new NotFoundException("User", id));
     }
 
     @Override
     public UserResult getAll(Pageable pageable) {
         log.info("Starting user get all service");
-        Page<UserDomainImpl> users = userDao.findAll(pageable);
 
-        List<UserDTO> userDTOs = users.getContent().stream()
-                .map(this::converDomainToDto)
-                .toList();
-        UserResult userResult = new UserResult();
-        userResult.setUsers(userDTOs);
-        return userResult;
+        Page<String> userIds = userDao.findAllIds(pageable);
+        List<UserDTO> userDTOs = new ArrayList<>();
+
+        Cache cache = cacheManager.getCache("userCache");
+
+        for (String userId : userIds.getContent()) {
+
+            UserDTO cachedUser = cache != null ? cache.get("api_user_" + userId, UserDTO.class) : null;
+            if (cachedUser != null) {
+                log.info("User {} found in cache", userId);
+                userDTOs.add(cachedUser);
+            } else {
+                log.info("User {} not found in cache", userId);
+                UserDomainImpl user = userDao.findById(userId).orElse(null);
+                if (user != null) {
+                    UserDTO userDTO = convertDomainToDto(user);
+                    if (cache != null) {
+                        cache.put("api_user_" + userId, userDTO);
+                        log.info("User {} saved in cache", userId);
+                    }
+                    userDTOs.add(userDTO);
+                }
+            }
+        }
+
+        UserResult result = new UserResult();
+        result.setUsers(userDTOs);
+
+        return result;
     }
 
+
+    @CacheEvict(value = "userCache", key = "'api_user_' + #id")
     public Boolean delete(String id) {
         log.info("Starting user delete service for user ID: {}", id);
         Optional<UserDomainImpl> user = userDao.findById(id);
@@ -119,6 +149,8 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
         }
     }
 
+    @CacheEvict(value = "userCache", key = "'api_user_' + #result.id", condition = "#result != null")
+    @CachePut(value = "userCache", key = "'api_user_' + #result.id", condition = "#result != null")
     public UserDTO update(String id, UserDTO dto) {
         log.info("Starting update for user with id: {}", dto.getId());
         validateUserData(dto);
@@ -150,23 +182,49 @@ public class UserService extends BaseServiceImpl<UserDTO, UserDomainImpl, UserRe
 
     }
 
+    @Cacheable(value = "userCache", key = "'api_user_' + #email")
     public UserDTO getByEmail(String email) {
         log.info("Starting user get by email service for user email: {}", email);
         return userDao.findByEmail(email)
-                .map(this::converDomainToDto)
+                .map(this::convertDomainToDto)
                 .orElseThrow(() -> new NotFoundException("User", email));
     }
 
+
+
     public UserResult getByRoleId(String roleId, Pageable pageable) {
         log.info("Starting user get by role id service for user role id: {}", roleId);
-        Page<UserDomainImpl> users = userDao.findAllByRoleId(roleId, pageable);
-        List<UserDTO> userDTOs = users.getContent().stream()
-                .map(this::converDomainToDto)
-                .toList();
-        UserResult userResult = new UserResult();
-        userResult.setUsers(userDTOs);
-        return userResult;
+
+        Page<String> userIds = userDao.findAllIdsByRoleId(roleId, pageable);
+        List<UserDTO> userDTOs = new ArrayList<>();
+
+        Cache cache = cacheManager.getCache("userCache");
+
+        for (String userId : userIds.getContent()) {
+            UserDTO cachedUser = cache != null ? cache.get("api_user_" + userId, UserDTO.class) : null;
+            if (cachedUser != null) {
+                log.info("User {} found in cache", userId);
+                userDTOs.add(cachedUser);
+            } else {
+                log.info("User {} not found in cache", userId);
+                UserDomainImpl user = userDao.findById(userId).orElse(null);
+                if (user != null) {
+                    UserDTO userDTO = convertDomainToDto(user);
+                    if (cache != null) {
+                        cache.put("api_user_" + userId, userDTO);
+                        log.info("User {} saved in cache", userId);
+                    }
+                    userDTOs.add(userDTO);
+                }
+            }
+        }
+
+        UserResult result = new UserResult();
+        result.setUsers(userDTOs);
+
+        return result;
     }
+
 
     private void validateUserData(UserDTO dto) {
         if (dto.getEmail() == null || dto.getEmail().trim().isEmpty()) {

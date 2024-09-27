@@ -1,9 +1,6 @@
 package com.fiuni.apiusuarios.controller.User;
 
 import com.fiuni.apiusuarios.service.user.UserService;
-import com.fiuni.apiusuarios.utils.AlreadyExistsException;
-import com.fiuni.apiusuarios.utils.InvalidDataException;
-import com.fiuni.apiusuarios.utils.NotFoundException;
 import com.fiuni.marketplacefreelancer.dto.User.UserDTO;
 import com.fiuni.marketplacefreelancer.dto.User.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
